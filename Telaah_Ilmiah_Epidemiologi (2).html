@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<title>Telaah Ilmiah Epidemiologi</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+
+  :root {
+    --bg: #F2F2F7;
+    --bg2: #FFFFFF;
+    --card: #FFFFFF;
+    --text: #1C1C1E;
+    --text-secondary: #3C3C43;
+    --text-muted: #8E8E93;
+    --border: #E5E5EA;
+    --sep: rgba(60,60,67,0.09);
+    --tint: #007AFF;
+    --tint-bg: rgba(0,122,255,0.08);
+    --card-shadow: 0 0.5px 0 0 rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);
+    --modal-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    --tab-bg: rgba(249,249,249,0.94);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .dark {
+    --bg: #000000;
+    --bg2: #1C1C1E;
+    --card: #1C1C1E;
+    --text: #F5F5F7;
+    --text-secondary: #AEAEB2;
+    --text-muted: #636366;
+    --border: #38383A;
+    --sep: rgba(84,84,88,0.36);
+    --tint: #0A84FF;
+    --tint-bg: rgba(10,132,255,0.12);
+    --card-shadow: 0 0.5px 0 0 rgba(0,0,0,0.2), 0 1px 3px rgba(0,0,0,0.3);
+    --tab-bg: rgba(28,28,30,0.88);
+  }
+
+  body {
+    background: var(--bg);
+    font-family: -apple-system, 'SF Pro Display', 'SF Pro Text', 'Inter', 'Helvetica Neue', sans-serif;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overscroll-behavior: none;
+  }
+
+  #root {
+    width: 100%;
+    max-width: 430px;
+    position: relative;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  /* ===== DYNAMIC ISLAND STATUS BAR ===== */
+  #dynamic-island-area {
+    background: var(--bg);
+    padding: 12px 24px 0;
+    position: relative;
+    z-index: 50;
+  }
+  #dynamic-island {
+    width: 126px;
+    height: 36px;
+    background: #000;
+    border-radius: 22px;
+    margin: 0 auto 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .dark #dynamic-island { background: #2C2C2E; }
+  #dynamic-island .island-dot {
+    width: 12px;
+    height: 12px;
+    background: #1C1C1E;
+    border-radius: 50%;
+    position: absolute;
+    right: 36px;
+  }
+  .dark #dynamic-island .island-dot { background: #000; }
+
+  #status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px 6px 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  #status-bar .status-icons {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+  }
+
+  /* ===== CREATOR BANNER ===== */
+  #creator-banner {
+    background: linear-gradient(135deg, #1C1C1E, #2C2C2E);
+    color: #fff;
+    text-align: center;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    margin: 0 20px 8px;
+    border-radius: 12px;
+  }
+  .dark #creator-banner {
+    background: linear-gradient(135deg, #2C2C2E, #3A3A3C);
+  }
+
+  /* ===== SCROLL AREA ===== */
+  #scroll-area {
+    height: calc(100vh - 180px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-top: 4px;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    overscroll-behavior-y: contain;
+  }
+  #scroll-area::-webkit-scrollbar { display: none; }
+
+  /* ===== TAB BAR — iOS 17 ===== */
+  #tab-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    height: auto;
+    min-height: 56px;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: var(--tab-bg);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-top: 0.33px solid var(--sep);
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    padding-top: 8px;
+    z-index: 100;
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-align-items: center;
+    align-items: center;
+    gap: 3px;
+    padding: 4px 20px 10px;
+    min-width: 64px;
+    min-height: 48px;
+    -webkit-transition: -webkit-transform 0.15s var(--spring);
+    transition: transform 0.15s var(--spring);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tab-btn:active { transform: scale(0.88); }
+  .tab-btn span {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.01em;
+    transition: color 0.2s;
+  }
+  .tab-btn.active span { color: var(--tint); }
+  .tab-btn svg {
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+  .tab-btn.active svg { color: var(--tint); }
+
+  /* ===== NAVIGATION ===== */
+  .back-btn {
+    background: none;
+    border: none;
+    color: var(--tint);
+    font-size: 17px;
+    font-weight: 400;
+    cursor: pointer;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 4px;
+    min-height: 44px;
+    -webkit-transition: opacity 0.15s;
+    transition: opacity 0.15s;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .back-btn:active { opacity: 0.5; }
+  .back-row {
+    display: flex;
+    align-items: center;
+    padding: 0 14px 4px;
+  }
+
+  /* ===== CARDS — iOS 17 GROUPED STYLE ===== */
+  .card {
+    background: var(--card);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+  }
+  .list-item {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    padding: 14px 16px;
+    cursor: pointer;
+    border-bottom: 0.33px solid var(--sep);
+    -webkit-transition: background 0.12s;
+    transition: background 0.12s;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .list-item:active { background: rgba(0,0,0,0.04); }
+  .dark .list-item:active { background: rgba(255,255,255,0.04); }
+  .list-item:last-child { border-bottom: none; }
+  .chev { opacity: 0.2; flex-shrink: 0; }
+
+  /* ===== PAGE LAYOUT ===== */
+  .page { padding: 0 20px 120px; padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px)); }
+  h1.page-title {
+    font-size: 34px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+
+  /* ===== HERO CARD — iOS 17 STYLE ===== */
+  .hero-card {
+    background: linear-gradient(145deg, #007AFF, #5856D6);
+    border-radius: 22px;
+    padding: 24px;
+    color: #fff;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 8px 32px rgba(0,122,255,0.18);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -30%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .dark .hero-card {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  /* ===== SECTION LABEL ===== */
+  .section-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 10px;
+    padding-left: 4px;
+  }
+
+  /* ===== QUICK SCROLL CARDS ===== */
+  .quick-scroll {
+    display: -webkit-flex;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+    margin-bottom: 24px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .quick-scroll::-webkit-scrollbar { display: none; }
+  .quick-card {
+    min-width: 140px;
+    background: var(--card);
+    border-radius: 18px;
+    padding: 18px 16px;
+    box-shadow: var(--card-shadow);
+    cursor: pointer;
+    -webkit-flex-shrink: 0;
+    flex-shrink: 0;
+    -webkit-transition: -webkit-transform 0.2s var(--spring), box-shadow 0.2s;
+    transition: transform 0.2s var(--spring), box-shadow 0.2s;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .quick-card:active {
+    -webkit-transform: scale(0.96);
+    transform: scale(0.96);
+  }
+
+  /* ===== PROGRESS BARS ===== */
+  .prog-bar-bg {
+    background: var(--sep);
+    border-radius: 10px;
+    height: 4px;
+    overflow: hidden;
+  }
+  .prog-bar-bg.thick { height: 6px; }
+  .prog-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.6s var(--ease-smooth);
+  }
+
+  /* ===== INFO ROWS ===== */
+  .info-row {
+    display: flex;
+    align-items: center;
+    padding: 13px 16px;
+    border-bottom: 0.33px solid var(--sep);
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-label { flex: 1; font-size: 15px; color: var(--text); }
+  .info-val { font-size: 15px; font-weight: 500; color: var(--text-muted); }
+
+  /* ===== MEETING DETAIL HEADER ===== */
+  .meeting-header {
+    border-radius: 22px;
+    padding: 28px 24px;
+    margin-bottom: 20px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .meeting-header::after {
+    content: '';
+    position: absolute;
+    bottom: -40%;
+    left: -20%;
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .meeting-header .m-icon { font-size: 48px; margin-bottom: 10px; }
+  .meeting-header .m-sub {
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0.75;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .meeting-header h2 {
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 14px;
+    letter-spacing: -0.02em;
+  }
+  .meeting-prog-bg {
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    height: 6px;
+    overflow: hidden;
+  }
+  .meeting-prog-fill {
+    background: #fff;
+    height: 100%;
+    border-radius: 20px;
+    transition: width 0.6s var(--ease-smooth);
+  }
+  .meeting-prog-pct {
+    font-size: 12px;
+    opacity: 0.65;
+    margin-top: 6px;
+    font-weight: 500;
+  }
+
+  .meeting-intro {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--card-shadow);
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  /* ===== VISUAL CARD ===== */
+  .visual-card {
+    background: var(--card);
+    border-radius: 18px;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .visual-card-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 14px 18px 0;
+  }
+  .visual-card svg { display: block; width: 100%; }
+
+  /* ===== SECTION ROW ===== */
+  .section-row {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    padding: 14px 16px;
+    cursor: pointer;
+    border-bottom: 0.33px solid var(--sep);
+    -webkit-transition: background 0.12s;
+    transition: background 0.12s;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .section-row:active { background: rgba(0,0,0,0.04); }
+  .dark .section-row:active { background: rgba(255,255,255,0.04); }
+  .section-row:last-child { border-bottom: none; }
+  .section-num {
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    margin-right: 14px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .section-title-text {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  /* ===== SECTION DETAIL ===== */
+  .pertemuan-badge {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+  }
+  .section-content-box {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: var(--card-shadow);
+    white-space: pre-wrap;
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--text-secondary);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+  .mark-btn {
+    width: 100%;
+    margin-top: 16px;
+    padding: 17px;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 600;
+    -webkit-transition: -webkit-transform 0.15s var(--spring), opacity 0.12s;
+    transition: transform 0.15s var(--spring), opacity 0.12s;
+    letter-spacing: -0.01em;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .mark-btn:active { -webkit-transform: scale(0.97); transform: scale(0.97); opacity: 0.85; }
+  .next-btn {
+    width: 100%;
+    margin-top: 8px;
+    padding: 17px;
+    border-radius: 14px;
+    border: none;
+    background: var(--tint-bg);
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--tint);
+    -webkit-transition: -webkit-transform 0.15s var(--spring);
+    transition: transform 0.15s var(--spring);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .next-btn:active { -webkit-transform: scale(0.97); transform: scale(0.97); }
+
+  /* ===== PROGRESS PAGE ===== */
+  .prog-center { display: flex; justify-content: center; margin-bottom: 24px; }
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+  .stat-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 20px 16px;
+    text-align: center;
+    box-shadow: var(--card-shadow);
+  }
+  .stat-num {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .stat-label { font-size: 14px; font-weight: 600; color: var(--text); margin-top: 2px; }
+  .stat-sub { font-size: 12px; color: var(--text-muted); }
+  .prog-list-item {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 14px 16px;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  /* ===== DARK TOGGLE ===== */
+  #dark-toggle {
+    width: 42px;
+    height: 42px;
+    border-radius: 21px;
+    background: var(--card);
+    border: none;
+    box-shadow: var(--card-shadow);
+    cursor: pointer;
+    font-size: 20px;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-transition: -webkit-transform 0.2s var(--spring);
+    transition: transform 0.2s var(--spring);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    appearance: none;
+    flex-shrink: 0;
+  }
+  #dark-toggle:active { -webkit-transform: scale(0.88) rotate(20deg); transform: scale(0.88) rotate(20deg); }
+
+  button { font-family: inherit; }
+  svg { display: block; }
+
+  /* ===== SVG DARK MODE ===== */
+  .dark .svg-text { fill: #fff !important; }
+  .dark .svg-subtext { fill: #8E8E93 !important; }
+  .dark .svg-bg { fill: #1C1C1E !important; }
+
+  /* ===== ANIMATIONS ===== */
+  @-webkit-keyframes fadeInUp {
+    from { opacity: 0; -webkit-transform: translateY(12px); transform: translateY(12px); }
+    to { opacity: 1; -webkit-transform: translateY(0); transform: translateY(0); }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @-webkit-keyframes scaleIn {
+    from { opacity: 0; -webkit-transform: scale(0.94); transform: scale(0.94); }
+    to { opacity: 1; -webkit-transform: scale(1); transform: scale(1); }
+  }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.94); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .page { -webkit-animation: fadeInUp 0.35s var(--ease-out) both; animation: fadeInUp 0.35s var(--ease-out) both; }
+  .hero-card { -webkit-animation: scaleIn 0.4s var(--ease-out) 0.05s both; animation: scaleIn 0.4s var(--ease-out) 0.05s both; }
+  .quick-card { -webkit-animation: fadeInUp 0.35s var(--ease-out) both; animation: fadeInUp 0.35s var(--ease-out) both; }
+  .quick-card:nth-child(1) { -webkit-animation-delay: 0.05s; animation-delay: 0.05s; }
+  .quick-card:nth-child(2) { -webkit-animation-delay: 0.08s; animation-delay: 0.08s; }
+  .quick-card:nth-child(3) { -webkit-animation-delay: 0.11s; animation-delay: 0.11s; }
+  .quick-card:nth-child(4) { -webkit-animation-delay: 0.14s; animation-delay: 0.14s; }
+  .quick-card:nth-child(5) { -webkit-animation-delay: 0.17s; animation-delay: 0.17s; }
+  .quick-card:nth-child(6) { -webkit-animation-delay: 0.20s; animation-delay: 0.20s; }
+
+  /* ===== CONFIRM CARD ===== */
+  .confirm-card {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: var(--card-shadow);
+    margin-top: 24px;
+  }
+  .confirm-card .confirm-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .confirm-card .confirm-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+  .confirm-link {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    border-radius: 14px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-transition: -webkit-transform 0.15s var(--spring), opacity 0.12s;
+    transition: transform 0.15s var(--spring), opacity 0.12s;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .confirm-link:active { -webkit-transform: scale(0.97); transform: scale(0.97); opacity: 0.85; }
+
+  /* ===== iOS 17 FROSTED SEARCH BAR (unused but styled for future) ===== */
+  .search-bar {
+    background: rgba(118,118,128,0.12);
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .search-bar input {
+    background: none;
+    border: none;
+    font-size: 17px;
+    color: var(--text);
+    outline: none;
+    width: 100%;
+    font-family: inherit;
+  }
+  /* ===== QUIZ MODAL ===== */
+  #form-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    -webkit-align-items: flex-end;
+    align-items: flex-end;
+    -webkit-justify-content: center;
+    justify-content: center;
+    padding: 0;
+  }
+  .modal-sheet {
+    background: var(--card);
+    border-radius: 22px 22px 0 0;
+    padding: 28px 24px 40px;
+    width: 100%;
+    max-width: 430px;
+    box-shadow: 0 -8px 40px rgba(0,0,0,0.2);
+    -webkit-animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+    animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @-webkit-keyframes slideUp {
+    from { -webkit-transform: translateY(100%); transform: translateY(100%); }
+    to { -webkit-transform: translateY(0); transform: translateY(0); }
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+<div id="root">
+  <div id="dynamic-island-area">
+    <div id="dynamic-island"><div class="island-dot"></div></div>
+    <div id="status-bar">
+      <span id="clock"></span>
+      <div class="status-icons">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M1 7h2v5H1V7zm4-3h2v8H5V4zm4-2h2v10H9V2zm4-2h2v12h-2V0z" opacity="0.4"/><path d="M1 7h2v5H1V7zm4-3h2v8H5V4zm4-2h2v10H9V2z"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 3a7 7 0 016.32 4 7 7 0 01-12.64 0A7 7 0 018 3zm0 1.5C5.51 4.5 3.37 5.94 2.39 7A6.5 6.5 0 008 9.5c2.49 0 4.63-1.44 5.61-2.5A6.5 6.5 0 008 4.5z" opacity="0"/><rect x="11" y="0" width="5" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="12" y="1.5" width="3" height="5" rx="0.5" fill="currentColor"/></svg>
+      </div>
+    </div>
+  </div>
+  <div id="creator-banner">👨‍💻 Aris Winandar, SKM, M.Kes</div>
+  <div id="scroll-area"></div>
+  <div id="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('home')" id="tb-home">
+      <svg width="25" height="25" viewBox="0 0 25 25" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12.5l2-2m0 0l7-7 7 7m-14 0v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      <span>Beranda</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('materi')" id="tb-materi">
+      <svg width="25" height="25" viewBox="0 0 25 25" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 6.753v13m0-13C11.332 5.977 9.746 5.5 8 5.5S4.668 5.977 3.5 6.753v13C4.668 18.977 6.254 18.5 8 18.5s3.332.477 4.5 1.253m0-13C13.668 5.977 15.254 5.5 17 5.5c1.747 0 3.332.477 4.5 1.253v13C20.332 18.977 18.747 18.5 17 18.5c-1.746 0-3.332.477-4.5 1.253"/></svg>
+      <span>Materi</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('progress')" id="tb-progress">
+      <svg width="25" height="25" viewBox="0 0 25 25" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 19.5v-6a2 2 0 00-2-2h-2a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9.5a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5.5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      <span>Progres</span>
+    </button>
+  </div>
+
+  <!-- MODAL KIRIM HASIL -->
+  <div id="form-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:flex-end;justify-content:center;">
+    <div class="modal-sheet">
+      <div style="width:36px;height:4px;background:var(--sep);border-radius:2px;margin:0 auto 20px"></div>
+      <div style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:6px;letter-spacing:-0.02em">📊 <span class="modal-label">Hasil Latihan</span></div>
+      <div style="font-size:15px;color:var(--text-muted);margin-bottom:20px">Hasil kuis dikirim ke dosen</div>
+      <div style="background:var(--bg);border-radius:14px;padding:16px;margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:0.33px solid var(--sep)"><span style="color:var(--text-muted);font-size:14px">Nama</span><span class="modal-nama" style="font-weight:600;font-size:14px;color:var(--text)">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:0.33px solid var(--sep)"><span style="color:var(--text-muted);font-size:14px">NIM</span><span class="modal-nim" style="font-weight:600;font-size:14px;color:var(--text)">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:0.33px solid var(--sep)"><span style="color:var(--text-muted);font-size:14px">Skor</span><span class="modal-score" style="font-weight:700;font-size:15px;color:#007AFF">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0"><span style="color:var(--text-muted);font-size:14px">Grade</span><span class="modal-grade" style="font-weight:700;font-size:15px;color:#34C759">—</span></div>
+      </div>
+      <div class="modal-status" style="font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.6;text-align:center">⏳ Mengirim data ke spreadsheet...</div>
+      <button class="modal-form-btn mark-btn" style="background:#AF52DE;color:#fff;margin-top:0">📋 Kirim</button>
+      <button class="next-btn" style="margin-top:8px" onclick="closeModal()">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// SVG VISUALS
+// ============================================================
+const visuals = {
+  1: `<svg viewBox="0 0 390 220" xmlns="http://www.w3.org/2000/svg">
+    <rect width="390" height="220" fill="none"/>
+    <polygon points="195,18 345,185 45,185" fill="#E8F0FF" stroke="#4A90D9" stroke-width="1.5"/>
+    <polygon points="195,18 240,85 150,85" fill="#4A90D9"/>
+    <text x="195" y="60" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Systematic Review</text>
+    <text x="195" y="72" text-anchor="middle" font-size="8" fill="#fff">/ Meta-analisis</text>
+    <polygon points="240,85 278,152 112,152 150,85" fill="#5B9BD5"/>
+    <text x="195" y="122" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">RCT (Uji Klinis</text>
+    <text x="195" y="134" text-anchor="middle" font-size="8" fill="#fff">Acak Terkontrol)</text>
+    <polygon points="278,152 345,185 45,185 112,152" fill="#7DB8E8"/>
+    <text x="195" y="168" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Kohort • Kasus-Kontrol</text>
+    <text x="195" y="180" text-anchor="middle" font-size="8" fill="#fff">Studi Potong Lintang</text>
+    <text x="195" y="205" text-anchor="middle" font-size="9" fill="#8E8E93">Kekuatan Bukti Ilmiah ↑ ke atas</text>
+    <text x="30" y="100" text-anchor="middle" font-size="22" fill="#4A90D9">↑</text>
+    <text x="30" y="120" text-anchor="middle" font-size="8" fill="#8E8E93">Kuat</text>
+    <text x="360" y="180" text-anchor="middle" font-size="8" fill="#8E8E93">Lemah</text>
+  </svg>`,
+  2: `<svg viewBox="0 0 390 210" xmlns="http://www.w3.org/2000/svg">
+    <rect width="390" height="210" fill="none"/>
+    <ellipse cx="195" cy="105" rx="52" ry="28" fill="#533483" />
+    <text x="195" y="101" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Desain</text>
+    <text x="195" y="114" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Penelitian</text>
+    <rect x="14" y="30" width="100" height="36" rx="10" fill="#0F3460"/>
+    <text x="64" y="52" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Observasional</text>
+    <line x1="114" y1="48" x2="143" y2="97" stroke="#0F3460" stroke-width="1.5" stroke-dasharray="4"/>
+    <rect x="276" y="30" width="100" height="36" rx="10" fill="#0F3460"/>
+    <text x="326" y="52" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Eksperimental</text>
+    <line x1="276" y1="48" x2="247" y2="97" stroke="#0F3460" stroke-width="1.5" stroke-dasharray="4"/>
+    <rect x="4" y="110" width="82" height="28" rx="8" fill="#4A90D9"/>
+    <text x="45" y="128" text-anchor="middle" font-size="8" fill="#fff">Deskriptif</text>
+    <rect x="4" y="146" width="82" height="28" rx="8" fill="#4A90D9"/>
+    <text x="45" y="164" text-anchor="middle" font-size="8" fill="#fff">Analitik</text>
+    <line x1="64" y1="120" x2="64" y2="110" stroke="#4A90D9" stroke-width="1"/>
+    <rect x="4" y="180" width="60" height="22" rx="6" fill="#7DB8E8"/>
+    <text x="34" y="195" text-anchor="middle" font-size="7.5" fill="#fff">Kohort</text>
+    <rect x="68" y="180" width="68" height="22" rx="6" fill="#7DB8E8"/>
+    <text x="102" y="195" text-anchor="middle" font-size="7.5" fill="#fff">Kasus-Kontrol</text>
+    <rect x="304" y="110" width="82" height="28" rx="8" fill="#E84393"/>
+    <text x="345" y="128" text-anchor="middle" font-size="8" fill="#fff">RCT</text>
+    <rect x="304" y="146" width="82" height="28" rx="8" fill="#E84393"/>
+    <text x="345" y="164" text-anchor="middle" font-size="8" fill="#fff">Quasi-Eksperimen</text>
+    <rect x="148" y="155" width="94" height="28" rx="8" fill="#34C759"/>
+    <text x="195" y="173" text-anchor="middle" font-size="8" fill="#fff">Potong Lintang</text>
+    <line x1="195" y1="133" x2="195" y2="155" stroke="#34C759" stroke-width="1.5"/>
+  </svg>`,
+  3: `<svg viewBox="0 0 390 200" xmlns="http://www.w3.org/2000/svg">
+    <rect width="390" height="200" fill="none"/>
+    <circle cx="140" cy="95" r="65" fill="#FF9500" fill-opacity="0.18" stroke="#FF9500" stroke-width="2"/>
+    <circle cx="250" cy="95" r="65" fill="#007AFF" fill-opacity="0.18" stroke="#007AFF" stroke-width="2"/>
+    <circle cx="195" cy="155" r="65" fill="#34C759" fill-opacity="0.18" stroke="#34C759" stroke-width="2"/>
+    <text x="110" y="75" text-anchor="middle" font-size="13" font-weight="700" fill="#FF9500">PERSON</text>
+    <text x="110" y="90" text-anchor="middle" font-size="9" fill="#FF9500">Siapa?</text>
+    <text x="110" y="103" text-anchor="middle" font-size="8" fill="#666">Umur, jenis kelamin</text>
+    <text x="110" y="115" text-anchor="middle" font-size="8" fill="#666">pekerjaan, perilaku</text>
+    <text x="280" y="75" text-anchor="middle" font-size="13" font-weight="700" fill="#007AFF">PLACE</text>
+    <text x="280" y="90" text-anchor="middle" font-size="9" fill="#007AFF">Di mana?</text>
+    <text x="280" y="103" text-anchor="middle" font-size="8" fill="#666">Negara, provinsi</text>
+    <text x="280" y="115" text-anchor="middle" font-size="8" fill="#666">urban/rural</text>
+    <text x="195" y="178" text-anchor="middle" font-size="13" font-weight="700" fill="#34C759">TIME</text>
+    <text x="195" y="191" text-anchor="middle" font-size="9" fill="#34C759">Kapan?</text>
+    <text x="195" y="118" text-anchor="middle" font-size="9" font-weight="700" fill="#555">Epidemiologi</text>
+    <text x="195" y="130" text-anchor="middle" font-size="8" fill="#555">Deskriptif</text>
+  </svg>`,
+  4: `<svg viewBox="0 0 390 200" xmlns="http://www.w3.org/2000/svg">
+    <rect width="390" height="200" fill="none"/>
+    <text x="195" y="20" text-anchor="middle" font-size="11" font-weight="700" fill="#533483">ALUR STUDI KOHORT</text>
+    <line x1="20" y1="105" x2="370" y2="105" stroke="#ccc" stroke-width="2"/>
+    <polygon points="370,101 380,105 370,109" fill="#ccc"/>
+    <text x="375" y="120" font-size="9" fill="#8E8E93">Waktu</text>
+    <circle cx="60" cy="105" r="8" fill="#533483"/>
+    <text x="60" y="130" text-anchor="middle" font-size="9" fill="#533483" font-weight="600">Awal</text>
+    <text x="60" y="142" text-anchor="middle" font-size="8" fill="#8E8E93">Populasi</text>
+    <rect x="110" y="60" width="100" height="34" rx="8" fill="#FF9500"/>
+    <text x="160" y="80" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Terpapar (E+)</text>
+    <line x1="68" y1="97" x2="110" y2="77" stroke="#FF9500" stroke-width="1.5"/>
+    <rect x="110" y="112" width="100" height="34" rx="8" fill="#4A90D9"/>
+    <text x="160" y="132" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Tdk Terpapar (E-)</text>
+    <line x1="68" y1="113" x2="110" y2="129" stroke="#4A90D9" stroke-width="1.5"/>
+    <rect x="265" y="45" width="80" height="26" rx="6" fill="#FF3B30"/>
+    <text x="305" y="62" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Sakit (D+)</text>
+    <line x1="210" y1="70" x2="265" y2="58" stroke="#FF3B30" stroke-width="1.2"/>
+    <rect x="265" y="76" width="80" height="26" rx="6" fill="#34C759"/>
+    <text x="305" y="93" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Sehat (D-)</text>
+    <line x1="210" y1="80" x2="265" y2="89" stroke="#34C759" stroke-width="1.2"/>
+    <rect x="265" y="112" width="80" height="26" rx="6" fill="#FF9500" fill-opacity="0.7"/>
+    <text x="305" y="129" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Sakit (D+)</text>
+    <line x1="210" y1="126" x2="265" y2="125" stroke="#FF9500" stroke-width="1.2"/>
+    <rect x="265" y="143" width="80" height="26" rx="6" fill="#34C759" fill-opacity="0.7"/>
+    <text x="305" y="160" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Sehat (D-)</text>
+    <line x1="210" y1="136" x2="265" y2="156" stroke="#34C759" stroke-width="1.2"/>
+    <text x="195" y="193" text-anchor="middle" font-size="9" fill="#533483" font-weight="600">Ukuran: Risiko Relatif (RR) = Insidens E+ / Insidens E-</text>
+  </svg>`,
+  5: `<svg viewBox="0 0 390 200" xmlns="http://www.w3.org/2000/svg">
+    <rect width="390" height="200" fill="none"/>
+    <text x="195" y="20" text-anchor="middle" font-size="11" font-weight="700" fill="#FF2D55">ALUR STUDI KASUS-KONTROL</text>
+    <line x1="370" y1="105" x2="20" y2="105" stroke="#ccc" stroke-width="2"/>
+    <polygon points="20,101 10,105 20,109" fill="#ccc"/>
+    <text x="5" y="120" font-size="9" fill="#8E8E93">←</text>
+    <text x="195" y="195" text-anchor="middle" font-size="9" fill="#8E8E93">Penelusuran ke masa LALU (Retrospektif)</text>
+    <rect x="280" y="58" width="90" height="34" rx="8" fill="#FF2D55"/>
+    <text x="325" y="78" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">KASUS (D+)</text>
+    <rect x="280" y="113" width="90" height="34" rx="8" fill="#5856D6"/>
+    <text x="325" y="133" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">KONTROL (D-)</text>
+    <rect x="60" y="32" width="76" height="26" rx="6" fill="#FF9500"/>
+    <text x="98" y="49" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Terpapar +</text>
+    <rect x="60" y="62" width="76" height="26" rx="6" fill="#FF9500" fill-opacity="0.45"/>
+    <text x="98" y="79" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Terpapar -</text>
+    <line x1="136" y1="45" x2="280" y2="75" stroke="#FF9500" stroke-width="1.2"/>
+    <line x1="136" y1="75" x2="280" y2="75" stroke="#FF9500" stroke-width="1.2" stroke-dasharray="4"/>
+    <rect x="60" y="110" width="76" height="26" rx="6" fill="#7DB8E8"/>
+    <text x="98" y="127" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Terpapar +</text>
+    <rect x="60" y="140" width="76" height="26" rx="6" fill="#7DB8E8" fill-opacity="0.45"/>
+    <text x="98" y="157" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Terpapar -</text>
+    <line x1="136" y1="123" x2="280" y2="130" stroke="#7DB8E8" stroke-width="1.2"/>
+    <line x1="136" y1="153" x2="280" y2="130" stroke="#7DB8E8" stroke-width="1.2" stroke-dasharray="4"/>
+    <text x="195" y="185" text-anchor="middle" font-size="9" fill="#FF2D55" font-weight="600">Ukuran Asosiasi: Odds Ratio (OR)</text>
+  </svg>`,
+  6: `<svg viewBox="0 0 390 215" xmlns="http://www.w3.org/2000/svg">
+    <rect width="390" height="215" fill="none"/>
+    <text x="195" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="#0F3460">TABEL KONTINGENSI 2×2</text>
+    <rect x="50" y="30" width="290" height="130" rx="6" fill="none" stroke="#ccc" stroke-width="1.5"/>
+    <rect x="50" y="30" width="290" height="35" rx="6" fill="#0F3460" fill-opacity="0.08"/>
+    <text x="195" y="35" text-anchor="middle" font-size="10" font-weight="700" fill="#0F3460">Penyakit</text>
+    <text x="265" y="55" text-anchor="middle" font-size="10" font-weight="700" fill="#FF3B30">Sakit (D+)</text>
+    <text x="340" y="55" text-anchor="middle" font-size="10" font-weight="700" fill="#34C759">Sehat (D-)</text>
+    <text x="80" y="90" text-anchor="middle" font-size="10" font-weight="700" fill="#FF9500">Terpapar</text>
+    <text x="80" y="103" text-anchor="middle" font-size="10" font-weight="700" fill="#FF9500">(E+)</text>
+    <text x="80" y="140" text-anchor="middle" font-size="10" font-weight="700" fill="#4A90D9">Tdk Terpapar</text>
+    <text x="80" y="153" text-anchor="middle" font-size="10" font-weight="700" fill="#4A90D9">(E-)</text>
+    <rect x="160" y="65" width="95" height="50" fill="#FF3B30" fill-opacity="0.12"/>
+    <text x="207" y="95" text-anchor="middle" font-size="26" font-weight="700" fill="#FF3B30">a</text>
+    <rect x="255" y="65" width="85" height="50" fill="#34C759" fill-opacity="0.12"/>
+    <text x="297" y="95" text-anchor="middle" font-size="26" font-weight="700" fill="#34C759">b</text>
+    <rect x="160" y="115" width="95" height="45" fill="#FF9500" fill-opacity="0.12"/>
+    <text x="207" y="143" text-anchor="middle" font-size="26" font-weight="700" fill="#FF9500">c</text>
+    <rect x="255" y="115" width="85" height="45" fill="#5856D6" fill-opacity="0.12"/>
+    <text x="297" y="143" text-anchor="middle" font-size="26" font-weight="700" fill="#5856D6">d</text>
+    <line x1="160" y1="30" x2="160" y2="160" stroke="#ccc" stroke-width="1"/>
+    <line x1="255" y1="30" x2="255" y2="160" stroke="#ccc" stroke-width="1"/>
+    <line x1="50" y1="65" x2="340" y2="65" stroke="#ccc" stroke-width="1"/>
+    <line x1="50" y1="115" x2="340" y2="115" stroke="#ccc" stroke-width="1"/>
+    <text x="60" y="180" font-size="9" fill="#FF3B30" font-weight="600">RR = [a/(a+b)] / [c/(c+d)]</text>
+    <text x="60" y="197" font-size="9" fill="#5856D6" font-weight="600">OR = (a×d) / (b×c)</text>
+    <text x="60" y="212" font-size="9" fill="#FF9500" font-weight="600">RD = [a/(a+b)] - [c/(c+d)]</text>
+  </svg>`,
+  7: `<svg viewBox="0 0 390 200" xmlns="http://www.w3.org/2000/svg">
+    <rect width="390" height="200" fill="none"/>
+    <text x="195" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="#0F3460">INSIDENS vs PREVALENS</text>
+    <ellipse cx="195" cy="110" rx="130" ry="65" fill="#4A90D9" fill-opacity="0.12" stroke="#4A90D9" stroke-width="2" stroke-dasharray="6"/>
+    <text x="195" y="170" text-anchor="middle" font-size="10" font-weight="700" fill="#4A90D9">PREVALENS — Snapshot satu waktu</text>
+    <circle cx="145" cy="100" r="14" fill="#FF3B30" fill-opacity="0.85"/>
+    <text x="145" y="105" text-anchor="middle" font-size="8" fill="#fff">Lama</text>
+    <circle cx="185" cy="85" r="14" fill="#FF3B30" fill-opacity="0.85"/>
+    <text x="185" y="90" text-anchor="middle" font-size="8" fill="#fff">Lama</text>
+    <circle cx="225" cy="100" r="14" fill="#FF6B35"/>
+    <text x="225" y="105" text-anchor="middle" font-size="8" fill="#fff">Baru</text>
+    <circle cx="170" cy="118" r="14" fill="#FF3B30" fill-opacity="0.85"/>
+    <text x="170" y="123" text-anchor="middle" font-size="8" fill="#fff">Lama</text>
+    <circle cx="215" cy="128" r="14" fill="#FF6B35"/>
+    <text x="215" y="133" text-anchor="middle" font-size="8" fill="#fff">Baru</text>
+    <defs>
+      <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#FF6B35"/></marker>
+      <marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#34C759"/></marker>
+    </defs>
+    <path d="M 80 60 Q 100 40 130 85" stroke="#FF6B35" stroke-width="2.5" fill="none" marker-end="url(#arr)"/>
+    <text x="38" y="45" font-size="9" font-weight="700" fill="#FF6B35">INSIDENS</text>
+    <text x="28" y="57" font-size="8" fill="#FF6B35">Kasus BARU</text>
+    <path d="M 255 115 Q 290 105 320 70" stroke="#34C759" stroke-width="2.5" fill="none" marker-end="url(#arr2)"/>
+    <text x="308" y="58" font-size="9" font-weight="700" fill="#34C759">Keluar</text>
+    <text x="302" y="70" font-size="8" fill="#34C759">Sembuh/</text>
+    <text x="307" y="81" font-size="8" fill="#34C759">Meninggal</text>
+    <text x="195" y="195" text-anchor="middle" font-size="8.5" fill="#0F3460" font-weight="600">Prevalens ≈ Insidens × Durasi Penyakit</text>
+  </svg>`,
+  8: `<svg viewBox="0 0 390 185" xmlns="http://www.w3.org/2000/svg">
+    <rect width="390" height="185" fill="none"/>
+    <text x="195" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="#AF52DE">PERSIAPAN UTS</text>
+    <text x="195" y="38" text-anchor="middle" font-size="10" fill="#8E8E93">Cakupan Materi Pertemuan 1–7</text>
+    <rect x="30" y="55" width="170" height="18" rx="4" fill="#4A90D9" fill-opacity="0.85"/>
+    <text x="38" y="68" font-size="9" fill="#fff" font-weight="600">Pengantar &amp; Konsep Dasar</text>
+    <rect x="30" y="79" width="145" height="18" rx="4" fill="#FF9500" fill-opacity="0.85"/>
+    <text x="38" y="92" font-size="9" fill="#fff" font-weight="600">Desain Penelitian</text>
+    <rect x="30" y="103" width="160" height="18" rx="4" fill="#34C759" fill-opacity="0.85"/>
+    <text x="38" y="116" font-size="9" fill="#fff" font-weight="600">Studi Kohort &amp; Kasus-Kontrol</text>
+    <rect x="30" y="127" width="130" height="18" rx="4" fill="#FF2D55" fill-opacity="0.85"/>
+    <text x="38" y="140" font-size="9" fill="#fff" font-weight="600">Ukuran Asosiasi</text>
+    <rect x="30" y="151" width="115" height="18" rx="4" fill="#5856D6" fill-opacity="0.85"/>
+    <text x="38" y="164" font-size="9" fill="#fff" font-weight="600">Insidens &amp; Prevalens</text>
+    <text x="270" y="80" text-anchor="middle" font-size="40">📝</text>
+    <text x="270" y="125" text-anchor="middle" font-size="10" font-weight="700" fill="#AF52DE">Pilihan Ganda</text>
+    <text x="270" y="140" text-anchor="middle" font-size="9" fill="#8E8E93">+ Esai Analitis</text>
+    <text x="270" y="155" text-anchor="middle" font-size="9" fill="#8E8E93">+ Studi Kasus</text>
+  </svg>`,
+  9: `<svg viewBox="0 0 390 220" xmlns="http://www.w3.org/2000/svg">
+    <rect width="390" height="220" fill="none"/>
+    <text x="195" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="#0F3460">9 KRITERIA BRADFORD HILL</text>
+    <circle cx="195" cy="118" r="35" fill="#0F3460"/>
+    <text x="195" y="114" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Bradford</text>
+    <text x="195" y="127" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Hill</text>
+    <g>
+      <ellipse cx="195" cy="50" rx="38" ry="17" fill="#4A90D9" fill-opacity="0.9"/>
+      <text x="195" y="53" text-anchor="middle" font-size="8" font-weight="700" fill="#fff">1. Kekuatan</text>
+      <ellipse cx="264" cy="68" rx="38" ry="17" fill="#FF9500" fill-opacity="0.9" transform="rotate(40,264,68)"/>
+      <text x="264" y="65" text-anchor="middle" font-size="7.5" font-weight="700" fill="#fff" transform="rotate(40,264,68)">2. Konsistensi</text>
+      <ellipse cx="290" cy="118" rx="38" ry="17" fill="#34C759" fill-opacity="0.9" transform="rotate(90,290,118)"/>
+      <text x="290" y="115" text-anchor="middle" font-size="7.5" font-weight="700" fill="#fff" transform="rotate(90,290,118)">3. Spesifisitas</text>
+      <ellipse cx="264" cy="168" rx="38" ry="17" fill="#FF2D55" fill-opacity="0.9" transform="rotate(140,264,168)"/>
+      <text x="264" y="165" text-anchor="middle" font-size="7.5" font-weight="700" fill="#fff" transform="rotate(140,264,168)">4. Temporalitas</text>
+      <ellipse cx="195" cy="186" rx="38" ry="17" fill="#5856D6" fill-opacity="0.9"/>
+      <text x="195" y="189" text-anchor="middle" font-size="7.5" font-weight="700" fill="#fff">5. Dosis-Respons</text>
+      <ellipse cx="126" cy="168" rx="38" ry="17" fill="#AF52DE" fill-opacity="0.9" transform="rotate(-140,126,168)"/>
+      <text x="126" y="165" text-anchor="middle" font-size="7.5" font-weight="700" fill="#fff" transform="rotate(-140,126,168)">6. Plausibilitas</text>
+      <ellipse cx="100" cy="118" rx="38" ry="17" fill="#FF6B35" fill-opacity="0.9" transform="rotate(-90,100,118)"/>
+      <text x="100" y="115" text-anchor="middle" font-size="7.5" font-weight="700" fill="#fff" transform="rotate(-90,100,118)">7. Koherensi</text>
+      <ellipse cx="126" cy="68" rx="38" ry="17" fill="#00C7BE" fill-opacity="0.9" transform="rotate(-40,126,68)"/>
+      <text x="126" y="65" text-anchor="middle" font-size="7.5" font-weight="700" fill="#fff" transform="rotate(-40,126,68)">8. Eksperimen</text>
+    </g>
+    <text x="195" y="212" text-anchor="middle" font-size="8" fill="#8E8E93">+ 9. Analogi</text>
+  </svg>`,
+  10: `<svg viewBox="0 0 390 200" xmlns="http://www.w3.org/2000/svg">
+    <rect width="390" height="200" fill="none"/>
+    <text x="195" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="#0F3460">SIKLUS SURVEILANS EPIDEMIOLOGI</text>
+    <circle cx="195" cy="108" r="72" fill="none" stroke="#E0E0E0" stroke-width="2" stroke-dasharray="5"/>
+    <circle cx="195" cy="38" r="26" fill="#4A90D9"/>
+    <text x="195" y="35" text-anchor="middle" font-size="8" font-weight="700" fill="#fff">Pengumpulan</text>
+    <text x="195" y="47" text-anchor="middle" font-size="8" fill="#fff">Data</text>
+    <circle cx="265" cy="108" r="26" fill="#FF9500"/>
+    <text x="265" y="105" text-anchor="middle" font-size="8" font-weight="700" fill="#fff">Pengolahan</text>
+    <text x="265" y="117" text-anchor="middle" font-size="8" fill="#fff">&amp; Analisis</text>
+    <circle cx="195" cy="178" r="26" fill="#34C759"/>
+    <text x="195" y="175" text-anchor="middle" font-size="8" font-weight="700" fill="#fff">Diseminasi</text>
+    <text x="195" y="187" text-anchor="middle" font-size="8" fill="#fff">Informasi</text>
+    <circle cx="125" cy="108" r="26" fill="#FF2D55"/>
+    <text x="125" y="105" text-anchor="middle" font-size="8" font-weight="700" fill="#fff">Respons</text>
+    <text x="125" y="117" text-anchor="middle" font-size="8" fill="#fff">Tindakan</text>
+    <defs>
+      <marker id="a1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#FF9500"/></marker>
+      <marker id="a2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#34C759"/></marker>
+      <marker id="a3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#FF2D55"/></marker>
+      <marker id="a4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#4A90D9"/></marker>
+    </defs>
+    <path d="M 218 55 Q 255 70 252 83" stroke="#FF9500" stroke-width="2" fill="none" marker-end="url(#a1)"/>
+    <path d="M 258 133 Q 248 165 218 170" stroke="#34C759" stroke-width="2" fill="none" marker-end="url(#a2)"/>
+    <path d="M 172 175 Q 140 165 132 133" stroke="#FF2D55" stroke-width="2" fill="none" marker-end="url(#a3)"/>
+    <path d="M 128 83 Q 148 55 172 45" stroke="#4A90D9" stroke-width="2" fill="none" marker-end="url(#a4)"/>
+  </svg>`,
+  11: `<svg viewBox="0 0 390 200" xmlns="http://www.w3.org/2000/svg">
+    <rect width="390" height="200" fill="none"/>
+    <text x="195" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="#FF3B30">RANTAI PENULARAN PENYAKIT</text>
+    <rect x="12" y="70" width="52" height="44" rx="8" fill="#FF3B30"/>
+    <text x="38" y="89" text-anchor="middle" font-size="8" font-weight="700" fill="#fff">Agen</text>
+    <text x="38" y="101" text-anchor="middle" font-size="7" fill="#fff">Patogen</text>
+    <polygon points="64,92 76,82 76,102" fill="#FF9500"/>
+    <rect x="76" y="70" width="52" height="44" rx="8" fill="#FF9500"/>
+    <text x="102" y="89" text-anchor="middle" font-size="8" font-weight="700" fill="#fff">Reservoir</text>
+    <text x="102" y="101" text-anchor="middle" font-size="7" fill="#fff">Manusia/hewan</text>
+    <polygon points="128,92 140,82 140,102" fill="#FFCC00"/>
+    <rect x="140" y="70" width="52" height="44" rx="8" fill="#FFCC00"/>
+    <text x="166" y="89" text-anchor="middle" font-size="8" font-weight="700" fill="#333">Portal</text>
+    <text x="166" y="101" text-anchor="middle" font-size="7" fill="#333">Keluar</text>
+    <polygon points="192,92 204,82 204,102" fill="#34C759"/>
+    <rect x="204" y="70" width="52" height="44" rx="8" fill="#34C759"/>
+    <text x="230" y="89" text-anchor="middle" font-size="8" font-weight="700" fill="#fff">Mode</text>
+    <text x="230" y="101" text-anchor="middle" font-size="7" fill="#fff">Transmisi</text>
+    <polygon points="256,92 268,82 268,102" fill="#4A90D9"/>
+    <rect x="268" y="70" width="52" height="44" rx="8" fill="#4A90D9"/>
+    <text x="294" y="89" text-anchor="middle" font-size="8" font-weight="700" fill="#fff">Portal</text>
+    <text x="294" y="101" text-anchor="middle" font-size="7" fill="#fff">Masuk</text>
+    <polygon points="320,92 332,82 332,102" fill="#5856D6"/>
+    <rect x="332" y="70" width="52" height="44" rx="8" fill="#5856D6"/>
+    <text x="358" y="89" text-anchor="middle" font-size="8" font-weight="700" fill="#fff">Host</text>
+    <text x="358" y="101" text-anchor="middle" font-size="7" fill="#fff">Rentan</text>
+    <text x="195" y="140" text-anchor="middle" font-size="10" font-weight="700" fill="#0F3460">Intervensi Memutus Rantai:</text>
+    <rect x="20" y="152" width="82" height="22" rx="6" fill="#0F3460" fill-opacity="0.12"/>
+    <text x="61" y="167" text-anchor="middle" font-size="8" fill="#0F3460" font-weight="600">🧪 Sterilisasi</text>
+    <rect x="108" y="152" width="82" height="22" rx="6" fill="#0F3460" fill-opacity="0.12"/>
+    <text x="149" y="167" text-anchor="middle" font-size="8" fill="#0F3460" font-weight="600">💉 Vaksinasi</text>
+    <rect x="196" y="152" width="82" height="22" rx="6" fill="#0F3460" fill-opacity="0.12"/>
+    <text x="237" y="167" text-anchor="middle" font-size="8" fill="#0F3460" font-weight="600">😷 APD</text>
+    <rect x="284" y="152" width="88" height="22" rx="6" fill="#0F3460" fill-opacity="0.12"/>
+    <text x="328" y="167" text-anchor="middle" font-size="8" fill="#0F3460" font-weight="600">🏥 Karantina</text>
+  </svg>`,
+  12: `<svg viewBox="0 0 390 200" xmlns="http://www.w3.org/2000/svg">
+    <rect width="390" height="200" fill="none"/>
+    <text x="195" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="#0F3460">FAKTOR RISIKO PENYAKIT TIDAK MENULAR</text>
+    <circle cx="195" cy="108" r="38" fill="#FF3B30" fill-opacity="0.12" stroke="#FF3B30" stroke-width="2"/>
+    <text x="195" y="103" text-anchor="middle" font-size="9" font-weight="700" fill="#FF3B30">PTM</text>
+    <text x="195" y="116" text-anchor="middle" font-size="8" fill="#FF3B30">Jantung, DM</text>
+    <text x="195" y="128" text-anchor="middle" font-size="8" fill="#FF3B30">Kanker, Stroke</text>
+    <rect x="10" y="30" width="100" height="24" rx="6" fill="#FF9500"/>
+    <text x="60" y="46" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff">🚬 Merokok</text>
+    <line x1="110" y1="42" x2="158" y2="85" stroke="#FF9500" stroke-width="1.5"/>
+    <rect x="10" y="62" width="100" height="24" rx="6" fill="#FF9500" fill-opacity="0.8"/>
+    <text x="60" y="78" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff">🍔 Diet Buruk</text>
+    <line x1="110" y1="74" x2="158" y2="95" stroke="#FF9500" stroke-width="1.5"/>
+    <rect x="10" y="94" width="100" height="24" rx="6" fill="#FF9500" fill-opacity="0.65"/>
+    <text x="60" y="110" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff">🛋️ Inaktivitas</text>
+    <line x1="110" y1="106" x2="157" y2="108" stroke="#FF9500" stroke-width="1.5"/>
+    <rect x="10" y="126" width="100" height="24" rx="6" fill="#FF9500" fill-opacity="0.5"/>
+    <text x="60" y="142" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff">🍺 Alkohol</text>
+    <line x1="110" y1="138" x2="158" y2="128" stroke="#FF9500" stroke-width="1.5"/>
+    <rect x="280" y="40" width="100" height="24" rx="6" fill="#5856D6"/>
+    <text x="330" y="56" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff">🧬 Genetik</text>
+    <line x1="280" y1="52" x2="233" y2="85" stroke="#5856D6" stroke-width="1.5"/>
+    <rect x="280" y="72" width="100" height="24" rx="6" fill="#5856D6" fill-opacity="0.8"/>
+    <text x="330" y="88" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff">👴 Usia</text>
+    <line x1="280" y1="84" x2="233" y2="100" stroke="#5856D6" stroke-width="1.5"/>
+    <rect x="280" y="104" width="100" height="24" rx="6" fill="#5856D6" fill-opacity="0.65"/>
+    <text x="330" y="120" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff">⚧ Jenis Kelamin</text>
+    <line x1="280" y1="116" x2="233" y2="112" stroke="#5856D6" stroke-width="1.5"/>
+    <text x="60" y="180" text-anchor="middle" font-size="9" fill="#FF9500" font-weight="600">↑ Bisa dimodifikasi</text>
+    <text x="330" y="180" text-anchor="middle" font-size="9" fill="#5856D6" font-weight="600">Tidak bisa dimodifikasi</text>
+  </svg>`,
+  13: `<svg viewBox="0 0 390 200" xmlns="http://www.w3.org/2000/svg">
+    <rect width="390" height="200" fill="none"/>
+    <text x="195" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="#0F3460">BIAS &amp; CONFOUNDING</text>
+    <rect x="15" y="32" width="112" height="80" rx="10" fill="#FF3B30" fill-opacity="0.1" stroke="#FF3B30" stroke-width="1.5"/>
+    <text x="71" y="52" text-anchor="middle" font-size="9" font-weight="700" fill="#FF3B30">BIAS SELEKSI</text>
+    <text x="71" y="68" text-anchor="middle" font-size="8" fill="#555">Pemilihan subjek</text>
+    <text x="71" y="80" text-anchor="middle" font-size="8" fill="#555">tidak representatif</text>
+    <text x="71" y="100" text-anchor="middle" font-size="7.5" fill="#FF3B30" font-style="italic">Contoh: volunteer</text>
+    <text x="71" y="110" text-anchor="middle" font-size="7.5" fill="#FF3B30" font-style="italic">bias, loss to FU</text>
+    <rect x="139" y="32" width="112" height="80" rx="10" fill="#FF9500" fill-opacity="0.1" stroke="#FF9500" stroke-width="1.5"/>
+    <text x="195" y="52" text-anchor="middle" font-size="9" font-weight="700" fill="#FF9500">BIAS INFORMASI</text>
+    <text x="195" y="68" text-anchor="middle" font-size="8" fill="#555">Kesalahan dalam</text>
+    <text x="195" y="80" text-anchor="middle" font-size="8" fill="#555">pengukuran/recall</text>
+    <text x="195" y="100" text-anchor="middle" font-size="7.5" fill="#FF9500" font-style="italic">Contoh: recall bias,</text>
+    <text x="195" y="110" text-anchor="middle" font-size="7.5" fill="#FF9500" font-style="italic">observer bias</text>
+    <rect x="263" y="32" width="112" height="80" rx="10" fill="#5856D6" fill-opacity="0.1" stroke="#5856D6" stroke-width="1.5"/>
+    <text x="319" y="52" text-anchor="middle" font-size="9" font-weight="700" fill="#5856D6">CONFOUNDING</text>
+    <text x="319" y="68" text-anchor="middle" font-size="8" fill="#555">Variabel ketiga</text>
+    <text x="319" y="80" text-anchor="middle" font-size="8" fill="#555">mengacaukan hasil</text>
+    <text x="319" y="100" text-anchor="middle" font-size="7.5" fill="#5856D6" font-style="italic">Contoh: umur sbg</text>
+    <text x="319" y="110" text-anchor="middle" font-size="7.5" fill="#5856D6" font-style="italic">confounder</text>
+    <text x="195" y="135" text-anchor="middle" font-size="10" font-weight="700" fill="#0F3460">Cara Mengatasi Confounding:</text>
+    <rect x="15" y="145" width="83" height="22" rx="5" fill="#0F3460" fill-opacity="0.1"/>
+    <text x="56" y="160" text-anchor="middle" font-size="8" fill="#0F3460" font-weight="600">Randomisasi</text>
+    <rect x="104" y="145" width="83" height="22" rx="5" fill="#0F3460" fill-opacity="0.1"/>
+    <text x="145" y="160" text-anchor="middle" font-size="8" fill="#0F3460" font-weight="600">Restriksi</text>
+    <rect x="193" y="145" width="83" height="22" rx="5" fill="#0F3460" fill-opacity="0.1"/>
+    <text x="234" y="160" text-anchor="middle" font-size="8" fill="#0F3460" font-weight="600">Matching</text>
+    <rect x="282" y="145" width="93" height="22" rx="5" fill="#0F3460" fill-opacity="0.1"/>
+    <text x="328" y="160" text-anchor="middle" font-size="8" fill="#0F3460" font-weight="600">Stratifikasi</text>
+    <text x="195" y="188" text-anchor="middle" font-size="8.5" fill="#5856D6" font-weight="600">Analisis Multivariat — kendali statistik confounder</text>
+  </svg>`,
+  14: `<svg viewBox="0 0 390 205" xmlns="http://www.w3.org/2000/svg">
+    <rect width="390" height="205" fill="none"/>
+    <text x="195" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="#0F3460">ALUR SYSTEMATIC REVIEW (PRISMA)</text>
+    <rect x="110" y="28" width="170" height="32" rx="6" fill="#4A90D9"/>
+    <text x="195" y="43" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Identifikasi</text>
+    <text x="195" y="55" text-anchor="middle" font-size="8" fill="#fff">Database: PubMed, Scopus, dll (n=2.400)</text>
+    <line x1="195" y1="60" x2="195" y2="72" stroke="#ccc" stroke-width="1.5"/>
+    <polygon points="191,72 199,72 195,78" fill="#ccc"/>
+    <rect x="120" y="78" width="150" height="32" rx="6" fill="#FF9500"/>
+    <text x="195" y="93" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Skrining Judul/Abstrak</text>
+    <text x="195" y="105" text-anchor="middle" font-size="8" fill="#fff">Setelah hapus duplikat (n=1.100)</text>
+    <line x1="195" y1="110" x2="195" y2="122" stroke="#ccc" stroke-width="1.5"/>
+    <polygon points="191,122 199,122 195,128" fill="#ccc"/>
+    <rect x="130" y="128" width="130" height="32" rx="6" fill="#34C759"/>
+    <text x="195" y="143" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Kelayakan Full-text</text>
+    <text x="195" y="155" text-anchor="middle" font-size="8" fill="#fff">Lolos skrining (n=180)</text>
+    <line x1="195" y1="160" x2="195" y2="172" stroke="#ccc" stroke-width="1.5"/>
+    <polygon points="191,172 199,172 195,178" fill="#ccc"/>
+    <rect x="148" y="178" width="94" height="24" rx="6" fill="#FF2D55"/>
+    <text x="195" y="193" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Included (n=42)</text>
+    <rect x="300" y="78" width="80" height="32" rx="6" fill="#FF3B30" fill-opacity="0.15" stroke="#FF3B30" stroke-width="1"/>
+    <text x="340" y="93" text-anchor="middle" font-size="8" fill="#FF3B30">Eksklusi</text>
+    <text x="340" y="105" text-anchor="middle" font-size="8" fill="#FF3B30">(n=1.300)</text>
+    <line x1="270" y1="94" x2="300" y2="94" stroke="#FF3B30" stroke-width="1" stroke-dasharray="3"/>
+    <rect x="300" y="128" width="80" height="32" rx="6" fill="#FF3B30" fill-opacity="0.15" stroke="#FF3B30" stroke-width="1"/>
+    <text x="340" y="143" text-anchor="middle" font-size="8" fill="#FF3B30">Eksklusi</text>
+    <text x="340" y="155" text-anchor="middle" font-size="8" fill="#FF3B30">(n=138)</text>
+    <line x1="260" y1="144" x2="300" y2="144" stroke="#FF3B30" stroke-width="1" stroke-dasharray="3"/>
+  </svg>`,
+  15: `<svg viewBox="0 0 390 200" xmlns="http://www.w3.org/2000/svg">
+    <rect width="390" height="200" fill="none"/>
+    <text x="195" y="16" text-anchor="middle" font-size="11" font-weight="700" fill="#0F3460">FOREST PLOT (Meta-analisis)</text>
+    <line x1="60" y1="30" x2="60" y2="175" stroke="#666" stroke-width="1"/>
+    <line x1="220" y1="28" x2="220" y2="175" stroke="#FF3B30" stroke-width="1.5" stroke-dasharray="4"/>
+    <text x="220" y="24" text-anchor="middle" font-size="8" fill="#FF3B30">RR=1 (null)</text>
+    <text x="55" y="52" text-anchor="end" font-size="8.5" fill="#333">Studi A, 2019</text>
+    <line x1="155" y1="48" x2="265" y2="48" stroke="#4A90D9" stroke-width="1.5"/>
+    <rect x="198" y="43" width="16" height="10" rx="2" fill="#4A90D9"/>
+    <text x="275" y="52" font-size="8" fill="#333">1.45 [1.12–1.89]</text>
+    <text x="55" y="78" text-anchor="end" font-size="8.5" fill="#333">Studi B, 2020</text>
+    <line x1="130" y1="74" x2="240" y2="74" stroke="#FF9500" stroke-width="1.5"/>
+    <rect x="178" y="69" width="20" height="10" rx="2" fill="#FF9500"/>
+    <text x="275" y="78" font-size="8" fill="#333">0.92 [0.71–1.20]</text>
+    <text x="55" y="104" text-anchor="end" font-size="8.5" fill="#333">Studi C, 2021</text>
+    <line x1="170" y1="100" x2="290" y2="100" stroke="#34C759" stroke-width="1.5"/>
+    <rect x="220" y="95" width="24" height="10" rx="2" fill="#34C759"/>
+    <text x="275" y="104" font-size="8" fill="#333">1.82 [1.41–2.35]</text>
+    <text x="55" y="130" text-anchor="end" font-size="8.5" fill="#333">Studi D, 2022</text>
+    <line x1="145" y1="126" x2="255" y2="126" stroke="#5856D6" stroke-width="1.5"/>
+    <rect x="193" y="121" width="14" height="10" rx="2" fill="#5856D6"/>
+    <text x="275" y="130" font-size="8" fill="#333">1.21 [0.95–1.55]</text>
+    <line x1="60" y1="147" x2="360" y2="147" stroke="#333" stroke-width="0.7" stroke-dasharray="2"/>
+    <polygon points="195,157 155,167 195,177 235,167" fill="#FF2D55"/>
+    <text x="65" y="163" font-size="8.5" font-weight="700" fill="#FF2D55">Pooled (n=4)</text>
+    <text x="275" y="167" font-size="8.5" font-weight="700" fill="#FF2D55">1.33 [1.10–1.61]</text>
+    <text x="120" y="188" text-anchor="middle" font-size="8" fill="#8E8E93">0.5</text>
+    <text x="220" y="188" text-anchor="middle" font-size="8" fill="#8E8E93">1.0</text>
+    <text x="290" y="188" text-anchor="middle" font-size="8" fill="#8E8E93">2.0</text>
+    <text x="155" y="198" font-size="8" fill="#8E8E93">← Protektif</text>
+    <text x="235" y="198" font-size="8" fill="#8E8E93">Risiko →</text>
+  </svg>`,
+  16: `<svg viewBox="0 0 390 180" xmlns="http://www.w3.org/2000/svg">
+    <rect width="390" height="180" fill="none"/>
+    <text x="195" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="#FF9500">UJIAN AKHIR SEMESTER</text>
+    <circle cx="195" cy="100" r="55" fill="none" stroke="#eee" stroke-width="12"/>
+    <circle cx="195" cy="100" r="55" fill="none" stroke="#FF9500" stroke-width="12" stroke-dasharray="138 208" stroke-dashoffset="0" transform="rotate(-90 195 100)"/>
+    <circle cx="195" cy="100" r="55" fill="none" stroke="#FF2D55" stroke-width="12" stroke-dasharray="104 242" stroke-dashoffset="-138" transform="rotate(-90 195 100)"/>
+    <circle cx="195" cy="100" r="55" fill="none" stroke="#4A90D9" stroke-width="12" stroke-dasharray="69 277" stroke-dashoffset="-242" transform="rotate(-90 195 100)"/>
+    <circle cx="195" cy="100" r="55" fill="none" stroke="#34C759" stroke-width="12" stroke-dasharray="35 311" stroke-dashoffset="-311" transform="rotate(-90 195 100)"/>
+    <text x="195" y="96" text-anchor="middle" font-size="11" font-weight="700" fill="#FF9500">Nilai</text>
+    <text x="195" y="110" text-anchor="middle" font-size="11" font-weight="700" fill="#FF9500">Akhir</text>
+    <rect x="14" y="145" width="10" height="10" rx="2" fill="#FF9500"/>
+    <text x="28" y="155" font-size="9" fill="#333">UAS 40%</text>
+    <rect x="88" y="145" width="10" height="10" rx="2" fill="#FF2D55"/>
+    <text x="102" y="155" font-size="9" fill="#333">UTS 30%</text>
+    <rect x="172" y="145" width="10" height="10" rx="2" fill="#4A90D9"/>
+    <text x="186" y="155" font-size="9" fill="#333">Tugas 20%</text>
+    <rect x="272" y="145" width="10" height="10" rx="2" fill="#34C759"/>
+    <text x="286" y="155" font-size="9" fill="#333">Hadir 10%</text>
+    <text x="195" y="175" text-anchor="middle" font-size="8.5" fill="#8E8E93">Lulus min. C (56–65) | Nilai A: ≥81</text>
+  </svg>`
+};
+
+// ============================================================
+// MEETINGS DATA (same as original)
+// ============================================================
+const meetings = [
+  {id:1,title:"Pengantar Telaah Ilmiah",full:"Pengantar Telaah Ilmiah Epidemiologi",icon:"🔬",color:"#007AFF",intro:"Telaah ilmiah epidemiologi adalah proses kritis mengevaluasi bukti penelitian kesehatan untuk mendukung pengambilan keputusan berbasis bukti (Evidence-Based Practice).",sections:[{title:"Definisi & Ruang Lingkup",content:"Telaah Ilmiah (Critical Appraisal) adalah:\nProses sistematis untuk menilai validitas, relevansi, dan aplikabilitas hasil penelitian kesehatan.\n\nEpidemiologi adalah:\nStudi distribusi dan determinan kondisi kesehatan pada populasi untuk mengendalikan masalah kesehatan.\n\nRuang Lingkup:\n• Menilai kualitas metodologi penelitian\n• Memahami ukuran asosiasi dan kemaknaan statistik\n• Mengaplikasikan hasil penelitian ke praktik klinis/kesehatan masyarakat"},{title:"Hierarki Bukti Ilmiah",content:"Bukti ilmiah bertingkat dari yang paling lemah ke paling kuat:\n\n① Expert Opinion / Laporan Kasus (paling lemah)\n② Studi Cross-sectional / Ekologi\n③ Studi Kasus-Kontrol\n④ Studi Kohort\n⑤ Randomized Controlled Trial (RCT)\n⑥ Systematic Review & Meta-analisis (paling kuat)\n\nSemakin tinggi hierarki:\n• Semakin kuat mengendalikan bias\n• Semakin valid inferensi kausal\n• Semakin dapat digeneralisasi"},{title:"Evidence-Based Practice",content:"EBP mengintegrasikan tiga elemen:\n\n① Bukti penelitian terbaik (Best Research Evidence)\n② Keahlian klinis (Clinical Expertise)\n③ Nilai & preferensi pasien (Patient Values)\n\nLangkah EBP (5A):\n1. Ask — rumuskan pertanyaan klinis (PICO)\n2. Acquire — cari bukti terbaik\n3. Appraise — nilai kualitas bukti\n4. Apply — terapkan ke pasien\n5. Assess — evaluasi outcome\n\nFormat PICO:\nP: Population | I: Intervention\nC: Comparison | O: Outcome"},{title:"Prinsip Telaah Kritis",content:"Tiga pertanyaan utama telaah kritis:\n\n① VALIDITAS — Apakah hasil studi benar?\n• Apakah desain sesuai pertanyaan?\n• Apakah ada bias?\n• Apakah confounding dikendalikan?\n\n② KEPENTINGAN — Seberapa besar efeknya?\n• Ukuran efek: RR, OR, RD, NNT\n• Interval kepercayaan (95% CI)\n• Kemaknaan klinis vs statistik\n\n③ APLIKABILITAS — Apakah dapat diterapkan?\n• Karakteristik populasi studi vs pasien kita\n• Ketersediaan intervensi\n• Pertimbangan etis dan biaya"}]},
+  {id:2,title:"Desain Penelitian",full:"Desain Penelitian Epidemiologi",icon:"🗂️",color:"#5856D6",intro:"Pemilihan desain penelitian yang tepat menentukan kualitas bukti yang dihasilkan dan kemampuan menjawab pertanyaan penelitian.",sections:[{title:"Klasifikasi Desain Penelitian",content:"Berdasarkan ada/tidaknya intervensi:\n\nOBSERVASIONAL — Peneliti hanya mengamati:\n• Deskriptif: case report, case series, cross-sectional, ekologi\n• Analitik: cohort, case-control, cross-sectional analitik\n\nEKSPERIMENTAL — Peneliti memberikan perlakuan:\n• RCT (Randomized Controlled Trial)\n• Quasi-eksperimen (tanpa randomisasi)\n• Community trial\n\nBerdasarkan waktu:\n• Retrospektif (ke masa lalu)\n• Prospektif (ke masa depan)\n• Cross-sectional (satu waktu)"},{title:"Studi Cross-Sectional",content:"Pengukuran paparan dan outcome BERSAMAAN:\n\nKelebihan:\n• Cepat dan murah\n• Dapat meneliti banyak faktor sekaligus\n• Baik untuk prevalens\n\nKekurangan:\n• Tidak bisa menentukan temporalitas\n• Rentan prevalence-incidence bias\n• Tidak bisa untuk penyakit langka\n\nAplikasi:\n• Survei kesehatan nasional (Riskesdas)\n• Screening program\n• Studi prevalens penyakit\n\nUkuran: Prevalens Ratio (PR), Odds Ratio (OR)"},{title:"Keunggulan & Keterbatasan RCT",content:"RCT — Standar Emas Penelitian Intervensi:\n\nKeunggulan:\n• Randomisasi mengeliminasi confounding\n• Dapat membuktikan kausalitas\n• Blinding mengurangi bias informasi\n• Internal validity tertinggi\n\nKeterbatasan:\n• Mahal dan lama\n• Etis: tidak bisa mengekspos risiko berbahaya\n• External validity terbatas (populasi selektif)\n• Tidak cocok untuk kondisi langka\n• Tidak cocok untuk faktor risiko permanen\n\nJenis Blinding:\n• Single blind: subjek tidak tahu\n• Double blind: subjek + peneliti tidak tahu\n• Triple blind: + analisis tidak tahu"},{title:"Memilih Desain yang Tepat",content:"Panduan memilih desain:\n\nPertanyaan → Desain\n\n\"Berapa prevalens DM di Aceh?\" → Cross-sectional\n\n\"Apakah merokok menyebabkan kanker paru?\" → Kohort (prospektif)\n\n\"Faktor risiko kanker serviks?\" → Kasus-Kontrol (penyakit langka)\n\n\"Apakah vaksin efektif mencegah COVID?\" → RCT\n\n\"Efek jangka panjang paparan pestisida?\" → Kohort\n\n\"Penyebab wabah keracunan makanan?\" → Kasus-Kontrol\n\nTips: Pertimbangkan waktu, dana, etika, dan kelangkaan penyakit."}]},
+  {id:3,title:"Studi Deskriptif",full:"Epidemiologi Deskriptif: Person, Place, Time",icon:"📊",color:"#FF9500",intro:"Epidemiologi deskriptif menggambarkan distribusi penyakit menurut orang, tempat, dan waktu — fondasi setiap investigasi epidemiologis.",sections:[{title:"Person — Siapa yang Terkena?",content:"Karakteristik individu yang mempengaruhi risiko:\n\nDemografi:\n• Umur — faktor risiko paling konsisten (kurva J pada PTM)\n• Jenis kelamin — hormon, perilaku, pekerjaan\n• Ras/etnis — genetik, budaya, akses layanan\n\nSosial-Ekonomi:\n• Pendidikan — literasi kesehatan\n• Pekerjaan — paparan lingkungan kerja\n• Pendapatan — akses gizi dan layanan kesehatan\n\nPerilaku & Biologis:\n• Merokok, alkohol, diet, aktivitas fisik\n• Status imunisasi, riwayat penyakit\n• Faktor genetik/keturunan"},{title:"Place — Di Mana Terjadi?",content:"Distribusi geografis penyakit:\n\nSpatial Cluster:\n• Spot map: satu titik = satu kasus\n• Area map: choropleth berdasarkan wilayah\n\nTingkatan:\n• Internasional: perbedaan antar negara (DM — Pasifik tinggi)\n• Nasional: urban vs rural\n• Lokal: peta wabah (John Snow, London 1854)\n\nFaktor yang Mempengaruhi:\n• Lingkungan fisik: iklim, vektor, sumber air\n• Sosial: kepadatan penduduk, sanitasi\n• Pelayanan kesehatan: akses dan kualitas\n\nAlat: GIS (Geographic Information System)"},{title:"Time — Kapan Terjadi?",content:"Pola waktu penyakit:\n\n① Tren Sekuler (jangka panjang):\n• Perubahan insidens/prevalens selama puluhan tahun\n• Contoh: tren peningkatan obesitas global\n\n② Variasi Musiman (seasonal):\n• DBD meningkat musim hujan\n• ISPA meningkat musim pancaroba\n\n③ Variasi Siklus:\n• Wabah influenza setiap 2-3 tahun\n• Pandemi flu setiap 10-40 tahun\n\n④ Pola Epidemi (point source vs propagated):\n• Point source: kurva lonceng, sumber tunggal\n• Propagated: gelombang berulang, penularan orang-ke-orang\n\nKurva Epidemi membantu identifikasi masa inkubasi dan sumber penularan."},{title:"Angka & Ukuran dalam Epidemiologi Deskriptif",content:"Ukuran Frekuensi Dasar:\n\n• Rasio = a/b (tidak memerlukan hubungan)\n• Proporsi = a/(a+b) × 100% (bagian dari keseluruhan)\n• Rate = kejadian/waktu (mengandung dimensi waktu)\n\nAngka Penting:\n• CBR (Crude Birth Rate) = lahir hidup/1.000 penduduk\n• CDR (Crude Death Rate) = kematian/1.000 penduduk\n• IMR (Infant Mortality Rate) = kematian bayi/1.000 KH\n• MMR (Maternal Mortality Ratio) = kematian ibu/100.000 KH\n• CFR (Case Fatality Rate) = meninggal/kasus × 100%\n\nIndonesia 2023: IMR = 16,85/1.000 KH | MMR = 183/100.000 KH"}]},
+  {id:4,title:"Studi Kohort",full:"Studi Kohort dan Ukuran Risiko",icon:"⏩",color:"#34C759",intro:"Studi kohort mengikuti kelompok terpapar dan tidak terpapar ke depan untuk membandingkan insidens outcome — desain terkuat untuk menentukan kausalitas setelah RCT.",sections:[{title:"Prinsip Dasar Studi Kohort",content:"Karakteristik Kohort:\n• Populasi yang diikuti dari awal (bebas outcome)\n• Dibedakan berdasarkan status paparan\n• Diikuti selama periode tertentu\n• Dicatat siapa yang mengembangkan outcome\n\nJenis Kohort:\n① Prospektif: paparan ditentukan sekarang, outcome diamati ke depan\n→ Lebih valid, mahal, lama\n\n② Retrospektif (historis): paparan dan outcome sudah terjadi, data dari rekam medis/database\n→ Lebih cepat, murah, tapi kualitas data terbatas\n\n③ Ambidirectional: kombinasi keduanya\n\nContoh Kohort Terkenal:\n• Framingham Heart Study (1948–kini): risiko kardiovaskular\n• Nurses Health Study: kanker dan gaya hidup"},{title:"Ukuran dalam Studi Kohort",content:"Risiko (Cumulative Incidence):\n= Kasus baru / Populasi awal\n\nInsiden Rate (Incidence Density):\n= Kasus baru / Total person-time\n\nRisiko Relatif (RR):\nRR = Insidens pada terpapar / Insidens pada tidak terpapar\n\nInterpretasi RR:\n• RR = 1 → tidak ada asosiasi\n• RR > 1 → faktor risiko (terpapar lebih berisiko)\n• RR < 1 → faktor protektif\n\nContoh:\nTerpapar: 50/1000 = 0.05\nTidak terpapar: 20/1000 = 0.02\nRR = 0.05/0.02 = 2.5\n→ Kelompok terpapar 2,5× lebih berisiko"},{title:"Risiko Atributable",content:"Risiko Atributable (Attributable Risk / RD):\nRD = Insidens E+ - Insidens E-\nRD = 0.05 - 0.02 = 0.03\n→ 3% kelebihan risiko akibat paparan\n\nFraksi Atributable pada terpapar (AF%):\nAF% = (RR-1)/RR × 100%\nAF% = (2.5-1)/2.5 × 100% = 60%\n→ 60% kasus pada terpapar dapat dicegah jika paparan dihilangkan\n\nFraksi Atributable Populasi (PAF%):\nPAF% = Pe × (RR-1) / [Pe × (RR-1) + 1] × 100%\nPe = proporsi terpapar di populasi\n\nPAF penting untuk prioritas kebijakan kesehatan masyarakat"},{title:"Kelebihan & Keterbatasan Kohort",content:"KELEBIHAN:\n• Temporal sequence jelas (paparan mendahului outcome)\n• Dapat menghitung insidens dan RR langsung\n• Dapat meneliti banyak outcome dari satu paparan\n• Baik untuk paparan langka\n• Mengurangi bias recall\n\nKETERBATASAN:\n• Mahal dan lama (prospektif)\n• Loss to follow-up — ancaman validitas\n• Tidak efisien untuk penyakit langka\n• Perubahan paparan selama follow-up sulit dikontrol\n• Healthy worker effect (bias seleksi)\n\nAtasi loss to follow-up:\n• Pertahankan kontak rutin\n• Buat partisipan tetap engaged\n• Lakukan analisis intention-to-treat"}]},
+  {id:5,title:"Studi Kasus-Kontrol",full:"Studi Kasus-Kontrol dan Odds Ratio",icon:"🔁",color:"#FF2D55",intro:"Studi kasus-kontrol efisien untuk meneliti penyakit langka dengan menelusuri riwayat paparan dari masa lalu — desain pilihan untuk investigasi wabah.",sections:[{title:"Prinsip Dasar Kasus-Kontrol",content:"Dimulai dari OUTCOME (penyakit), bukan paparan:\n\n① Identifikasi kasus (penderita penyakit)\n② Pilih kontrol (tidak menderita penyakit)\n③ Telusuri riwayat paparan masa lalu\n④ Bandingkan proporsi terpapar antara kasus vs kontrol\n\nPemilihan Kasus:\n• Kasus insiden (baru) lebih baik dari kasus prevalen\n• Kriteria inklusi/eksklusi jelas\n• Konfirmasi diagnosis standar (ICD)\n\nPemilihan Kontrol:\n• Harus berasal dari populasi yang sama dengan kasus\n• Hospital control vs population control\n• Matching: umur, jenis kelamin, wilayah\n• Ratio kasus:kontrol optimal = 1:4 (untuk kasus langka)"},{title:"Odds Ratio (OR)",content:"Kenapa bukan RR? Pada kasus-kontrol, insidens TIDAK BISA dihitung langsung karena kita memilih berdasarkan outcome.\n\nSolusi: Odds Ratio (OR)\n\nOdds paparan pada kasus = a/c\nOdds paparan pada kontrol = b/d\n\nOR = (a/c) / (b/d) = (a×d) / (b×c)\n\nInterpretasi OR:\n• OR = 1 → tidak ada asosiasi\n• OR > 1 → faktor risiko\n• OR < 1 → faktor protektif\n\nOR ≈ RR jika prevalens penyakit rendah (<10%) — Rare Disease Assumption\n\nContoh:\na=80, b=40, c=20, d=60\nOR = (80×60)/(40×20) = 4800/800 = 6\n→ Kasus 6× lebih mungkin terpapar"},{title:"Matching dalam Kasus-Kontrol",content:"Matching: menyamakan variabel confounding antara kasus dan kontrol\n\nIndividual Matching: setiap kasus dipasangkan dengan 1+ kontrol berdasarkan karakteristik tertentu\n\nFrequency Matching: distribusi karakteristik kelompok kontrol disesuaikan dengan kasus\n\nKelebihan Matching:\n• Mengeliminasi confounding variabel yang di-match\n• Meningkatkan efisiensi statistik\n\nKeterbatasan Matching:\n• Variabel yang di-match tidak bisa dianalisis sebagai confounder\n• Overmatching: jika match pada intermediate variable\n• Lebih sulit menemukan kontrol\n\nAnalisis: Matched pairs harus dianalisis dengan Conditional Logistic Regression atau McNemar test"},{title:"Kelebihan & Keterbatasan",content:"KELEBIHAN:\n• Efisien untuk penyakit langka\n• Cepat dan murah\n• Dapat meneliti banyak faktor risiko\n• Baik untuk penyakit dengan masa laten panjang\n• Cocok untuk investigasi wabah (KLB)\n\nKETERBATASAN:\n• Tidak bisa hitung insidens dan RR langsung\n• Rentan bias recall (kasus lebih ingat paparan)\n• Rentan bias seleksi dalam pemilihan kontrol\n• Temporal sequence tidak selalu jelas\n• Tidak cocok untuk paparan langka\n\nBias Recall:\n• Kasus cenderung lebih mengingat/mencari penyebab\n• Atasi: validasi dengan biomarker atau rekam medis"}]},
+  {id:6,title:"Ukuran Asosiasi",full:"Ukuran Asosiasi dan Tabel 2×2",icon:"📐",color:"#5856D6",intro:"Memahami tabel kontingensi 2×2 dan berbagai ukuran asosiasi adalah inti dari analisis epidemiologi — menentukan seberapa kuat hubungan paparan dengan penyakit.",sections:[{title:"Tabel 2×2 — Fondasi Analisis",content:"Tabel 2×2 merangkum hubungan paparan-penyakit:\n\n          Sakit(D+)  Sehat(D-)\nTerpapar(E+)   a         b\nTdk Terpapar(E-)  c      d\n\nMakna sel:\na = terpapar DAN sakit\nb = terpapar TIDAK sakit\nc = tidak terpapar DAN sakit\nd = tidak terpapar DAN tidak sakit\n\nTurunan:\na+b = total terpapar\nc+d = total tidak terpapar\na+c = total kasus\nb+d = total kontrol/sehat\nN = a+b+c+d = total sampel\n\nRumus kunci:\nInsidens E+ = a/(a+b)\nInsidens E- = c/(c+d)\nOdds E+ pada kasus = a/c\nOdds E+ pada kontrol = b/d"},{title:"Risiko Relatif & Odds Ratio",content:"RISIKO RELATIF (RR) — untuk kohort & cross-sectional:\nRR = [a/(a+b)] / [c/(c+d)]\n\nInterpretasi:\n• RR = 1 → tidak ada asosiasi\n• RR = 2 → 2× lebih berisiko pada kelompok terpapar\n• RR = 0.5 → 50% lebih protektif\n\nODDS RATIO (OR) — untuk kasus-kontrol:\nOR = (a×d) / (b×c)\n\nHubungan OR dan RR:\nOR ≈ RR jika prevalens penyakit rendah (<10%)\nOR selalu lebih ekstrem dari RR\n\nPREVALENS RATIO (PR) — untuk cross-sectional:\nPR = Prevalens E+ / Prevalens E-\nDirekomendasikan menggantikan OR pada cross-sectional"},{title:"Risiko Atributable & NNT",content:"PERBEDAAN RISIKO (RD / ARisk):\nRD = Insidens E+ - Insidens E-\n\nMAKNA: berapa kelebihan risiko akibat paparan\nRD positif → paparan berbahaya\nRD negatif → paparan protektif\n\nNUMBER NEEDED TO HARM (NNH):\nNNH = 1/RD\n→ Berapa orang terpapar agar 1 orang jadi sakit\n\nNUMBER NEEDED TO TREAT (NNT):\nNNT = 1/|RD|\n→ Berapa orang harus diintervensi agar 1 outcome dicegah\nNNT kecil = intervensi lebih efektif\n\nContoh:\nInsidens E+ = 0.12, E- = 0.04\nRD = 0.08\nNNH = 1/0.08 = 12.5 → setiap 13 orang terpapar, 1 menjadi sakit"},{title:"Interval Kepercayaan & Uji Hipotesis",content:"Interval Kepercayaan 95% (95% CI):\n• Rentang nilai yang dengan 95% kepercayaan mencakup nilai populasi sebenarnya\n• CI sempit = estimasi presisi tinggi (sampel besar)\n• CI lebar = estimasi presisi rendah (sampel kecil)\n\nInterpretasi CI pada RR/OR:\n• CI tidak mencakup 1.0 → signifikan secara statistik\n• CI mencakup 1.0 → tidak signifikan (H0 tidak ditolak)\n\nContoh:\nOR = 3.5, 95%CI: 2.1–5.8 → signifikan (tidak mencakup 1)\nOR = 1.8, 95%CI: 0.9–3.6 → tidak signifikan (mencakup 1)\n\np-value:\n• p < 0.05 → tolak H0 (konvensional)\n• p-value BUKAN ukuran kekuatan asosiasi!\n• Lebih utamakan CI dan ukuran efek\n\nKemaknaan klinis vs statistik harus dipertimbangkan bersama."}]},
+  {id:7,title:"Insidens & Prevalens",full:"Ukuran Frekuensi: Insidens dan Prevalens",icon:"📈",color:"#FF9500",intro:"Insidens mengukur kasus BARU — dinamika penyakit. Prevalens mengukur beban total penyakit pada suatu waktu. Keduanya esensial untuk perencanaan kesehatan.",sections:[{title:"Insidens — Kasus Baru",content:"Insidens mengukur laju kemunculan kasus baru:\n\nCUMULATIVE INCIDENCE (CI) / RISIKO:\nCI = Kasus baru / Populasi awal (yang rentan)\nSatuan: proporsi (0–1) atau per 1.000 penduduk\nSyarat: populasi tertutup, periode waktu tetap\n\nINCIDENCE RATE (IR) / INCIDENCE DENSITY:\nIR = Kasus baru / Total person-time at risk\nSatuan: per 1.000 orang-tahun\nDigunakan jika ada loss to follow-up\n\nPerson-time:\n= waktu total semua subjek dalam risiko\nJika 100 orang diikuti 2 tahun = 200 orang-tahun\n\nContoh:\n15 kasus baru TB dalam 1000 orang selama 1 tahun\nCI = 15/1000 = 15‰\nIR = 15/950 orang-tahun = 15.8 per 1000 orang-tahun"},{title:"Prevalens — Beban Penyakit",content:"Prevalens mengukur proporsi kasus pada suatu waktu:\n\nPOINT PREVALENCE:\n= Kasus saat ini / Populasi total\nContoh: 200 penderita DM dari 10.000 penduduk\nPP = 200/10.000 = 2%\n\nPERIOD PREVALENCE:\n= Kasus selama periode / Populasi rata-rata\nMencakup kasus lama + baru dalam periode\n\nFaktor yang Meningkatkan Prevalens:\n• Insidens tinggi\n• Durasi penyakit panjang\n• Migrasi masuk penderita\n\nFaktor yang Menurunkan Prevalens:\n• Insidens rendah\n• Kematian tinggi\n• Kesembuhan cepat\n• Migrasi keluar penderita"},{title:"Hubungan Insidens & Prevalens",content:"Rumus Konversi (steady-state):\nP = I × D\n(Prevalens = Insidens × Durasi penyakit)\n\nImplikasi:\nJika insidens tetap tapi obat baru memperpanjang hidup penderita:\n→ PREVALENS meningkat meski insidens tidak berubah\n\nContoh: HIV di era ART\n• Insidens HIV tetap stabil\n• Durasi hidup ODHA meningkat drastis\n• Prevalens HIV meningkat\n\nPentingnya Membedakan Insidens vs Prevalens:\n• Insidens → untuk penelitian etiologi (kausal)\n• Prevalens → untuk perencanaan fasilitas dan kebutuhan layanan\n\nRatio Prevalens/Insidens ≈ Durasi rata-rata penyakit"},{title:"Angka Kematian & Morbiditas",content:"ANGKA KEMATIAN:\n• CFR = Kematian akibat penyakit X / Kasus penyakit X × 100%\n → Ukuran keparahan penyakit\n\n• IFR (Infection Fatality Rate) = meninggal / semua terinfeksi (termasuk tanpa gejala)\n\n• Standardisasi langsung: membandingkan CDR antar populasi berbeda umur\n → Gunakan populasi standar\n\nSECONDARY ATTACK RATE (SAR):\n= Kasus baru di antara kontak / Total kontak rentan × 100%\nMengukur kemudahan penularan dalam kelompok kontak\n\nREPRODUCTION NUMBER (R0):\nRata-rata kasus baru yang ditularkan dari 1 kasus\n• R0 > 1 → epidemi berlanjut\n• R0 < 1 → epidemi terkendali\n• R0 COVID-19 original strain ≈ 2.5–3"}]},
+  {id:8,title:"UTS",full:"Ujian Tengah Semester",icon:"📝",color:"#AF52DE",isExam:true,intro:"UTS mencakup materi pertemuan 1–7 dengan penekanan pada pemahaman konsep dan kemampuan menghitung serta menginterpretasikan ukuran epidemiologi.",sections:[{title:"Cakupan Materi UTS",content:"Pertemuan 1 — Pengantar & Hierarki Bukti\n• Definisi telaah kritis, EBP, format PICO\n• Piramida bukti ilmiah\n\nPertemuan 2 — Desain Penelitian\n• Klasifikasi desain, RCT, cross-sectional\n\nPertemuan 3 — Epidemiologi Deskriptif\n• Person, Place, Time\n• Angka morbiditas dan mortalitas dasar\n\nPertemuan 4 — Studi Kohort\n• Prinsip, RR, Attributable Risk\n\nPertemuan 5 — Studi Kasus-Kontrol\n• Prinsip, OR, matching\n\nPertemuan 6 — Ukuran Asosiasi\n• Tabel 2×2, RR, OR, RD, NNT, CI\n\nPertemuan 7 — Insidens & Prevalens\n• CI, IR, Point/Period prevalence, P=I×D"},{title:"Format & Bobot Penilaian UTS",content:"PILIHAN GANDA — 25 soal (40%)\n• Definisi dan konsep dasar\n• Identifikasi desain penelitian\n• Interpretasi nilai RR, OR, CI\n\nESAI ANALITIS — 2 soal (30%)\n• Membandingkan kelebihan/keterbatasan desain\n• Menjelaskan hubungan insidens dan prevalens\n\nSTUDI KASUS — 1 kasus (30%)\n• Menghitung RR atau OR dari tabel 2×2\n• Menginterpretasikan hasil\n• Menyimpulkan asosiasi"},{title:"Contoh Soal Studi Kasus",content:"Sebuah penelitian mengikuti 500 perokok dan 500 bukan perokok selama 10 tahun. Hasilnya:\n• Perokok yang menderita kanker paru: 45 orang\n• Bukan perokok yang menderita kanker paru: 9 orang\n\nPertanyaan:\n(a) Desain penelitian apakah yang digunakan?\n(b) Hitung Insidens kumulatif masing-masing kelompok\n(c) Hitung RR dan interpretasikan\n(d) Hitung Attributable Risk\n(e) Berapa % kasus pada perokok yang dapat dicegah jika mereka berhenti merokok?\n\nJawaban:\n(a) Kohort prospektif\n(b) E+ = 45/500=0.09 | E- = 9/500=0.018\n(c) RR = 0.09/0.018 = 5.0 → perokok 5× berisiko\n(d) AR = 0.09-0.018 = 0.072 (7,2%)\n(e) AF% = (5-1)/5 × 100% = 80%"},{title:"🧪 Latihan Soal UTS — 20 Soal Pilihan Ganda",content:"__QUIZ_UTS__"}]},
+  {id:9,title:"Kausalitas",full:"Teori Kausalitas dalam Epidemiologi",icon:"⚡",color:"#FF9500",intro:"Membuktikan hubungan kausal adalah tujuan utama epidemiologi — bukan sekadar asosiasi statistik. Kriteria Bradford Hill menjadi panduan utama.",sections:[{title:"Asosiasi vs Kausalitas",content:"Asosiasi statistik ≠ Kausalitas!\n\nJenis Asosiasi:\n\n① Asosiasi Artefak (palsu):\n• Akibat bias atau kesalahan pengukuran\n• Bukan hubungan nyata\n\n② Asosiasi Spurious (semu):\n• Akibat confounding\n• Keduanya dipengaruhi variabel ketiga\n• Contoh: sepatu ortopedis dengan harapan hidup panjang (sama-sama dipengaruhi umur)\n\n③ Asosiasi Kausal Tidak Langsung:\n• Melalui intermediate variable\n• Contoh: kemiskinan → gizi buruk → stunting\n\n④ Asosiasi KAUSAL (langsung):\n• Paparan menyebabkan outcome\n• Memenuhi kriteria Bradford Hill"},{title:"9 Kriteria Bradford Hill",content:"① Kekuatan Asosiasi (Strength)\nRR/OR besar → lebih mungkin kausal\nRR merokok-kanker paru = 9-10\n\n② Konsistensi (Consistency)\nDitemukan di berbagai studi, populasi, desain\n\n③ Spesifisitas (Specificity)\nSatu paparan → satu penyakit\n(kriteria ini paling lemah)\n\n④ Temporalitas (Temporality)\nPAPARAN mendahului OUTCOME\n→ Satu-satunya kriteria yang WAJIB!\n\n⑤ Gradien Biologis / Dosis-Respons\nSemakin besar dosis → semakin besar efek\n\n⑥ Plausibilitas Biologis\nMasuk akal secara mekanisme biologi\n\n⑦ Koherensi\nTidak bertentangan dengan pengetahuan yang ada\n\n⑧ Eksperimen\nAda bukti dari RCT atau quasi-eksperimen\n\n⑨ Analogi\nAda hubungan serupa yang sudah diakui"},{title:"Model Kausalitas Epidemiologi",content:"MODEL WEB OF CAUSATION (MacMahon):\n• Penyakit disebabkan jaringan faktor kompleks\n• Tidak ada penyebab tunggal\n• Intervensi pada titik manapun dapat mencegah penyakit\n\nMODEL SEGITIGA EPIDEMIOLOGI:\nHost ↔ Agent ↔ Environment\n• Penyakit terjadi jika ketiganya tidak seimbang\n• Intervensi: kendalikan agent, perkuat host, perbaiki lingkungan\n\nMODEL RODA:\n• Host di tengah (genetik)\n• Dikelilingi lingkungan (biologis, fisik, sosial)\n• Ukuran komponen mencerminkan kontribusi relatif\n\nSUFFICIENT-COMPONENT CAUSE MODEL (Rothman):\n• Sufficient cause: kombinasi komponen yang cukup\n• Necessary cause: komponen yang selalu ada"},{title:"Penerapan Kausalitas dalam Telaah Kritis",content:"Langkah Evaluasi Kausalitas dalam Telaah Jurnal:\n\n1. Tentukan apakah asosiasi nyata atau artefak?\n→ Nilai potensi bias dan confounding\n\n2. Apakah temporalitas terpenuhi?\n→ Cek desain penelitian\n\n3. Berapa kekuatan asosiasi?\n→ Hitung/cek RR, OR, beserta CI\n\n4. Apakah ada gradien dosis-respons?\n→ Cari data stratifikasi paparan\n\n5. Apakah konsisten dengan studi lain?\n→ Cari systematic review/meta-analisis\n\n6. Apakah plausibel secara biologis?\n→ Konsultasi literatur mekanisme\n\nCatatan: Tidak semua kriteria harus terpenuhi. Temporalitas adalah satu-satunya yang MUTLAK."}]},
+  {id:10,title:"Surveilans Epidemiologi",full:"Surveilans Epidemiologi dan Sistem Informasi",icon:"📡",color:"#00C7BE",intro:"Surveilans adalah mata dan telinga sistem kesehatan — pemantauan berkelanjutan yang memungkinkan respons cepat terhadap ancaman kesehatan masyarakat.",sections:[{title:"Definisi & Tujuan Surveilans",content:"Definisi (CDC):\n'Pengumpulan, analisis, dan interpretasi data kesehatan yang berkelanjutan dan sistematis untuk perencanaan, implementasi, dan evaluasi program kesehatan masyarakat.'\n\nTujuan Surveilans:\n① Memantau tren penyakit\n② Mendeteksi KLB/wabah secara dini\n③ Identifikasi kelompok berisiko tinggi\n④ Mengevaluasi program intervensi\n⑤ Menginformasikan kebijakan kesehatan\n\nKarakteristik Surveilans yang Baik (CDC):\n• Sensitif: dapat mendeteksi kasus\n• Spesifik: tidak banyak false positive\n• Representatif: mewakili populasi\n• Tepat waktu: data cepat tersedia\n• Sederhana dan dapat diterima"},{title:"Jenis Surveilans",content:"Berdasarkan Metode Pengumpulan:\n\n① Surveilans Pasif:\n• Fasilitas kesehatan melaporkan kasus secara rutin\n• Murah, tidak membutuhkan banyak SDM\n• Kekurangan: underreporting\n\n② Surveilans Aktif:\n• Petugas aktif mencari kasus ke lapangan\n• Lebih akurat, mahal\n• Contoh: AFP surveillance (polio)\n\n③ Surveilans Sentinel:\n• Dipilih fasilitas sentinel tertentu\n• Data berkualitas tinggi dari lokasi representatif\n• Contoh: surveilans influenza sentinel\n\nBerdasarkan Cakupan:\n• Komprehensif: semua kasus wajib lapor\n• Sampel: hanya sebagian fasilitas\n\nSurveilans Berbasis Indikator vs Berbasis Kejadian (Event-based)"},{title:"Sistem Surveilans di Indonesia",content:"Sistem Kewaspadaan Dini & Respons (SKDR):\n• Pelaporan mingguan dari Puskesmas\n• 24 penyakit prioritas (DBD, ISPA, diare, dll)\n• Berbasis web: SKDR online\n• Alert jika kasus melebihi ambang batas\n\nSistem Surveilans Nasional:\n• SISMAL (Malaria)\n• SIHA (HIV/AIDS)\n• Surveilans TB — Aplikasi SITB\n• SKDR (26 penyakit menular)\n• Surveilans Gizi (e-PPGBM)\n\nIHR (International Health Regulations 2005):\n• Kewajiban pelaporan kejadian PHEIC\n• National Focal Point Indonesia: Kemenkes\n• Notifikasi WHO dalam 24-48 jam"},{title:"Investigasi KLB/Wabah",content:"10 Langkah Investigasi KLB:\n\n1. Konfirmasi diagnosis dan KLB\n2. Definisi kasus\n3. Temukan dan hitung kasus\n4. Orientasi data: Person, Place, Time\n5. Tentukan populasi berisiko\n6. Buat hipotesis\n7. Uji hipotesis (analitik)\n8. Kendalikan dan cegah\n9. Komunikasikan temuan\n10. Laporan akhir\n\nDefinisi Kasus dalam KLB:\n• Suspected: gejala klinis tanpa konfirmasi lab\n• Probable: gejala + epidemiologis\n• Confirmed: terkonfirmasi laboratorium\n\nR = kasus/ekspektasi\nJika R > 1 → ada peningkatan abnormal"}]},
+  {id:11,title:"Epidemiologi PM",full:"Epidemiologi Penyakit Menular",icon:"🦠",color:"#FF3B30",intro:"Epidemiologi penyakit menular mempelajari dinamika penularan dan strategi memutus rantai infeksi — dasar pengendalian penyakit infeksi.",sections:[{title:"Rantai Penularan (Chain of Infection)",content:"6 Mata Rantai Penularan:\n\n① AGEN INFEKSIUS:\n• Bakteri: M. tuberculosis, Vibrio cholerae\n• Virus: HIV, SARS-CoV-2, dengue\n• Parasit: Plasmodium (malaria)\n• Karakteristik: infektivitas, patogenisitas, virulensi\n\n② RESERVOIR:\n• Manusia: tifoid, gonore\n• Hewan (zoonosis): rabies, brucellosis\n• Lingkungan: Legionella (air), C. tetani (tanah)\n\n③ PORTAL KELUAR:\n• Saluran napas: TBC, COVID-19\n• Saluran cerna: kolera, tifoid\n• Darah: HIV, hepatitis B\n\n④ MODA TRANSMISI:\n• Langsung: kontak, droplet, airborne\n• Tidak langsung: vehicle (air, makanan), vektor\n\n⑤ PORTAL MASUK: sesuai portal keluar\n\n⑥ HOST RENTAN: tidak imun, status gizi buruk"},{title:"Imunitas Kelompok (Herd Immunity)",content:"Herd Immunity Threshold (HIT):\nHIT = 1 - (1/R0)\n\nContoh:\n• Campak: R0=15, HIT=93%\n• COVID-19: R0=3, HIT=67%\n• Polio: R0=6, HIT=83%\n\nArtinya: herd immunity campak memerlukan ≥93% populasi imun\n\nCara Mencapai:\n① Vaksinasi massal\n② Infeksi alami (tidak dianjurkan)\n\nKonsekuensi jika HIT tidak tercapai:\n• Wabah dapat terjadi meski imunisasi ada\n• Kelompok rentan (bayi, immunocompromised) tidak terlindungi\n\nContoh Indonesia:\n• Program BIAN 2022: targetkan HIT campak\n• PIN Polio: eradikasi polio Indonesia"},{title:"Riwayat Alamiah & Tingkat Pencegahan",content:"RIWAYAT ALAMIAH PENYAKIT:\n\n① Tahap Kerentanan:\n• Belum terinfeksi\n• Pencegahan Primer: vaksinasi, higiene\n\n② Tahap Subklinis:\n• Terinfeksi tapi belum ada gejala (inkubasi)\n• Skrining & pencegahan sekunder\n\n③ Tahap Klinis:\n• Gejala muncul, diagnosis ditegakkan\n• Pengobatan untuk mencegah komplikasi\n\n④ Tahap Pemulihan/Kecacatan/Kematian:\n• Pencegahan Tersier: rehabilitasi\n\nTINGKAT PENCEGAHAN (Leavell & Clark):\n• Primordial: cegah munculnya faktor risiko (kebijakan)\n• Primer: cegah penyakit (vaksin, APD)\n• Sekunder: deteksi & obati dini\n• Tersier: rehabilitasi & cegah kekambuhan"},{title:"Penyakit Menular Prioritas Indonesia",content:"DBD (Demam Berdarah Dengue):\n• Vektor: Aedes aegypti\n• CFR Indonesia: <1% (target)\n• Program: PSN 3M Plus, Fogging\n\nTuberkulosis (TB):\n• Indonesia: peringkat 2 global\n• MDR-TB meningkat\n• Program: DOTS, SITB\n\nMalaria:\n• Target eliminasi 2030\n• Endemis di Papua, NTT\n• Program: SISMAL, kelambu berinsektisida\n\nHIV/AIDS:\n• Prevalens: ~0.4% dewasa\n• Transmisi: seksual > IDU\n• Program: ARV gratis, PPIA\n\nCOVID-19:\n• R0 original: 2.5–3\n• R0 Omicron: ~10\n• Lesson learned: pentingnya surveilans genomik"}]},
+  {id:12,title:"Epidemiologi PTM & Skrining",full:"Epidemiologi Penyakit Tidak Menular dan Skrining",icon:"❤️‍🩹",color:"#FF2D55",intro:"PTM menyumbang 74% kematian global dan menjadi beban utama sistem kesehatan Indonesia — pencegahan melalui skrining dan modifikasi faktor risiko adalah kunci.",sections:[{title:"Epidemiologi PTM Global & Nasional",content:"4 PTM Utama (WHO):\n\n① Penyakit Kardiovaskular — 17.9 juta kematian/tahun\n② Kanker — 9.3 juta kematian/tahun\n③ Penyakit Pernapasan Kronik — 4.1 juta/tahun\n④ Diabetes Mellitus — 2 juta/tahun\n\nTotal: 41 juta kematian/tahun (74% kematian global)\n\nTransisi Epidemiologi Indonesia:\n• Tahun 1990: penyakit menular dominan\n• Tahun 2023: PTM sudah 70% penyebab kematian\n• Double burden: PM masih tinggi, PTM meningkat\n\nRiskesdas 2018 (Indonesia):\n• Hipertensi: 34.1%\n• DM: 8.5%\n• Obesitas sentral: 31%\n• Merokok >15 tahun: 33.8%"},{title:"Faktor Risiko PTM & Pencegahan",content:"4 Faktor Risiko Utama (WHO):\n\n① MEROKOK:\n• Menyebabkan 8 juta kematian/tahun global\n• Kanker paru, PPOK, kardiovaskular\n• Indonesia: 34% penduduk dewasa merokok\n\n② DIET TIDAK SEHAT:\n• Tinggi gula, lemak jenuh, garam\n• Rendah buah, sayur, serat\n\n③ INAKTIVITAS FISIK:\n• 3,2 juta kematian/tahun global\n• Rekomendasi: 150 menit/minggu aktivitas sedang\n\n④ PENGGUNAAN ALKOHOL:\n• Hepatitis alkoholik, sirosis, kanker\n\nPencegahan PTM (WHO):\n• Primordial: cegah timbulnya faktor risiko\n• Primer: kendalikan faktor risiko\n• Sekunder: deteksi dini (skrining)\n• Tersier: rehabilitasi, cegah komplikasi"},{title:"Skrining & Deteksi Dini",content:"Skrining: pengujian orang tanpa gejala untuk menemukan penyakit awal\n\nKriteria Wilson & Jungner untuk Program Skrining:\n• Penyakit penting bagi kesehatan masyarakat\n• Perjalanan penyakit dipahami\n• Ada stadium dini yang dapat dideteksi\n• Ada tes skrining yang valid\n• Ada pengobatan yang efektif\n• Fasilitas diagnosis dan terapi tersedia\n• Biaya skrining sepadan\n\nUkuran Validitas Tes Skrining:\n• Sensitivitas = a/(a+c) → kemampuan deteksi sakit\n• Spesifisitas = d/(b+d) → kemampuan identifikasi sehat\n• PPV: jika tes positif, peluang benar sakit\n• NPV: jika tes negatif, peluang benar sehat\n\nProgram Skrining Indonesia:\n• IVA test (kanker serviks)\n• Skrining DM & hipertensi di Posbindu\n• Mammografi (kanker payudara)"},{title:"Beban PTM di Indonesia",content:"Data Riskesdas 2018:\n• Hipertensi: 34.1% (naik dari 25.8% di 2013)\n• DM: 8.5% (naik dari 6.9%)\n• Stroke: 10.9/1.000 penduduk\n• Kanker: 1.79/1.000 penduduk\n• PPOK: 3.7/1.000 penduduk ≥15 tahun\n\nBiaya Katastropik BPJS 2022:\n• Penyakit jantung: Rp 9.87 triliun (terbesar)\n• Kanker: Rp 3.6 triliun\n• Stroke: Rp 2.8 triliun\n• Gagal ginjal: Rp 2.5 triliun\n\nStrategi PJPT (Pencegahan dan Pengendalian PTM):\n• Germas (Gerakan Masyarakat Hidup Sehat)\n• Posbindu PTM\n• Skrining faktor risiko 15 penyakit\n• Penguatan layanan primer"}]},
+  {id:13,title:"Bias & Confounding",full:"Bias, Confounding, dan Pengendaliannya",icon:"⚖️",color:"#5856D6",intro:"Bias dan confounding adalah ancaman utama validitas penelitian epidemiologi. Mengenal dan mengendalikannya adalah kunci telaah kritis yang baik.",sections:[{title:"Bias Seleksi",content:"Bias Seleksi terjadi saat subjek terpilih tidak representatif:\n\nJenis Bias Seleksi:\n\n① Volunteer Bias / Healthy Worker Effect:\n• Orang yang bersedia ikut penelitian lebih sehat\n• Umum pada studi kohort pekerja\n\n② Berkson's Bias:\n• Pasien rumah sakit tidak mewakili populasi umum\n• Umum pada kasus-kontrol berbasis RS\n\n③ Neyman/Prevalence-Incidence Bias:\n• Kasus fatal cepat meninggal, tidak sempat masuk studi\n• Kasus ringan tidak terdeteksi\n• Prevalens kasus yang tersisa ≠ semua kasus\n\n④ Loss to Follow-up Bias:\n• Yang drop out berbeda dari yang bertahan\n• Ancaman utama studi kohort\n\nPengendalian:\n• Desain yang baik (kriteria inklusi/eksklusi jelas)\n• Minimalisasi loss to follow-up"},{title:"Bias Informasi",content:"Bias Informasi terjadi saat pengukuran tidak akurat:\n\n① Recall Bias:\n• Kasus lebih mengingat paparan (mereka mencari penyebab)\n• Lebih umum pada kasus-kontrol\n• Atasi: validasi dengan biomarker/rekam medis\n\n② Observer Bias:\n• Peneliti yang tahu hipotesis mempengaruhi pencatatan\n• Atasi: blinding penilai\n\n③ Interviewer Bias:\n• Pewawancara lebih dalam menggali pada kelompok tertentu\n• Atasi: strukturkan pertanyaan, latih pewawancara\n\n④ Misclassification Bias:\n• Non-differential: kesalahan merata di semua kelompok\n → Hasil bias menuju null (RR/OR mendekati 1)\n• Differential: kesalahan lebih pada satu kelompok\n → Dapat membiaskan ke segala arah\n\n⑤ Hawthorne Effect:\n• Perilaku berubah karena sadar diamati"},{title:"Confounding",content:"Confounder adalah variabel yang:\n① Berhubungan dengan paparan\n② Berhubungan dengan outcome\n③ Bukan intermediate variable\n\nContoh Klasik:\n• Penelitian: hubungan minum kopi dengan kanker pankreas\n• Hasil: OR=2.5\n• Confounding: perokok lebih sering minum kopi\n• Merokok adalah confounder\n• Setelah adjusted: OR=1.2 (tidak signifikan)\n\nCara Identifikasi Confounder:\n• Cek bivariate association\n• Bandingkan crude RR vs adjusted RR\n• Jika berbeda ≥10-15%: confounding ada\n\nPengendalian Confounding:\nSaat DESAIN:\n• Randomisasi (terbaik)\n• Restriksi (batasi studi pada satu kategori)\n• Matching\n\nSaat ANALISIS:\n• Stratifikasi (Mantel-Haenszel)\n• Regresi logistik / Cox regression\n• Propensity score matching"},{title:"Evaluasi Bias dalam Telaah Jurnal",content:"Daftar Pertanyaan Telaah Kritis untuk Bias:\n\nBias Seleksi:\n• Bagaimana kasus dan kontrol dipilih?\n• Apakah ada perbedaan sistematis antara yang ikut dan tidak ikut?\n• Berapa % loss to follow-up?\n\nBias Informasi:\n• Bagaimana paparan diukur?\n• Apakah pengukuran sama di semua kelompok?\n• Apakah peneliti mengetahui status paparan saat menilai outcome?\n\nConfounding:\n• Apakah peneliti mengidentifikasi confounding potensial?\n• Apakah confounding dikendalikan dalam analisis?\n• Berapa perbedaan crude vs adjusted estimate?\n\nAlat Telaah Kritis Standar:\n• STROBE (observasional)\n• CONSORT (RCT)\n• PRISMA (systematic review)\n• GRADE (kualitas bukti keseluruhan)"}]},
+  {id:14,title:"Systematic Review",full:"Systematic Review dan Meta-analisis",icon:"🔎",color:"#34C759",intro:"Systematic review dan meta-analisis berada di puncak hierarki bukti — mensintesis seluruh bukti yang ada untuk menjawab pertanyaan klinis secara komprehensif.",sections:[{title:"Systematic Review vs Literature Review",content:"LITERATURE REVIEW (Naratif):\n• Tidak sistematis — peneliti memilih studi subjektif\n• Rentan bias publikasi dan seleksi\n• Tidak ada protokol yang terdaftar\n• Tidak dapat direplikasi\n\nSYSTEMATIC REVIEW:\n• Protokol terdaftar (PROSPERO)\n• Pencarian komprehensif dan transparan\n• Kriteria inklusi/eksklusi eksplisit\n• Penilaian kualitas studi (risk of bias)\n• Dapat direplikasi\n\nMETA-ANALISIS:\n• Pooling statistik dari beberapa studi\n• Menghasilkan satu estimasi gabungan\n• Tidak semua SR melakukan meta-analisis\n• Syarat: studi cukup homogen\n\nLangkah SR:\n① PICO → ② Protokol PROSPERO → ③ Pencarian → ④ Skrining → ⑤ Ekstraksi → ⑥ Penilaian bias → ⑦ Sintesis → ⑧ GRADE"},{title:"Alur PRISMA",content:"PRISMA (Preferred Reporting Items for Systematic Reviews):\n\nFASE IDENTIFIKASI:\n• Cari di multiple database: PubMed, Scopus, Embase, Cochrane\n• Grey literature: WHO, CDC, thesis\n• Reference list dari artikel relevan\n• Catat total semua artikel ditemukan\n\nFASE SKRINING:\n• Hapus duplikat\n• Skrining judul dan abstrak\n• Terapkan kriteria inklusi/eksklusi\n• Dua reviewer independen → kappa agreement\n\nFASE KELAYAKAN:\n• Baca full-text\n• Eksklusi dengan alasan yang dicatat\n\nFASE INCLUDED:\n• Studi yang memenuhi semua kriteria\n• Lakukan ekstraksi data\n• Nilai risk of bias\n\nDiagram PRISMA: visualisasi alur dengan jumlah di setiap tahap"},{title:"Heterogenitas & Forest Plot",content:"Heterogenitas: variasi hasil antar studi\n\nUkuran Heterogenitas:\n• Cochran's Q test: p<0.1 → heterogen\n• I² statistik:\n  - 0-25%: heterogenitas rendah\n  - 25-75%: sedang\n  - >75%: tinggi — meta-analisis dipertanyakan\n\nModel Pooling:\n• Fixed Effect: semua studi estimasi efek sama\n• Random Effect: efek berbeda antar studi → lebih konservatif (CI lebih lebar)\n\nFOREST PLOT:\n• Setiap baris = satu studi\n• Kotak = estimasi efek, ukuran ∝ bobot studi\n• Garis horizontal = 95% CI\n• Berlian di bawah = pooled estimate\n• Garis vertikal: null line (RR=1 atau MD=0)\n• Jika 95% CI tidak melewati null: signifikan\n\nFUNNEL PLOT: mendeteksi bias publikasi"},{title:"Penilaian Kualitas Bukti (GRADE)",content:"GRADE: Grading of Recommendations Assessment, Development and Evaluation\n\nLevel Kualitas Bukti:\n🔴 Sangat Rendah: RCT dengan downgrade banyak, atau observasional\n🟠 Rendah: RCT dengan downgrade, atau observasional upgrded\n🟡 Sedang: RCT dengan beberapa downgrade\n🟢 Tinggi: RCT tanpa downgrade, atau observasional sangat konsisten\n\nFaktor Downgrade (menurunkan kualitas):\n• Risk of bias tinggi\n• Inkonsistensi antar studi\n• Indirectness (populasi/intervensi berbeda)\n• Imprecision (CI lebar)\n• Bias publikasi\n\nFaktor Upgrade (meningkatkan kualitas observasional):\n• Efek sangat besar (RR>2 atau <0.5)\n• Gradien dosis-respons jelas\n• Confounding justru melemahkan efek nyata\n\nAplikasi: Pedoman klinis WHO, IDAI, PERKENI"}]},
+  {id:15,title:"Studi Kasus Telaah",full:"Studi Kasus Telaah Ilmiah Epidemiologi",icon:"🏥",color:"#FF2D55",intro:"Penerapan seluruh konsep telaah kritis pada jurnal penelitian nyata — dari membaca PICO hingga menilai validitas, kepentingan, dan aplikabilitas.",sections:[{title:"Membaca Jurnal Secara Kritis",content:"Struktur Jurnal Ilmiah:\n\nJUDUL & ABSTRAK:\n• Identifikasi desain penelitian\n• Tentukan PICO\n• Catat hasil utama dan kesimpulan\n\nPENDAHULUAN:\n• Apa pertanyaan penelitian?\n• Apakah didukung literatur?\n\nMETODE:\n• Desain: apakah sesuai pertanyaan?\n• Populasi: siapa dan dari mana?\n• Pengukuran: valid dan reliable?\n• Analisis: apakah tepat?\n\nHASIL:\n• Tabel baseline: apakah kelompok sebanding?\n• Ukuran efek dan CI\n• Missing data: berapa banyak?\n\nDISKUSI:\n• Apakah bias diakui?\n• Apakah kesimpulan sesuai data?\n• Generalisabilitas?"},{title:"Checklist Telaah Jurnal Kohort (STROBE)",content:"Penilaian Validitas Internal:\n\nSELEKSI:\n□ Apakah sumber dan metode seleksi subjek dijelaskan?\n□ Apakah ada perbedaan antara yang ikut dan tidak?\n□ Berapa % loss to follow-up?\n□ Apakah analisis sensitivitas dilakukan?\n\nKOMPARABILITAS:\n□ Apakah karakteristik baseline sebanding?\n□ Apakah confounding diidentifikasi?\n□ Apakah analisis adjusted dilaporkan?\n\nOUTCOME:\n□ Apakah outcome didefinisikan jelas?\n□ Apakah outcome diukur sama di semua kelompok?\n□ Apakah follow-up cukup panjang?\n\nHASIL:\n□ Apakah jumlah peserta per analisis dilaporkan?\n□ Apakah dilaporkan absolute risk, bukan hanya RR?\n□ Apakah CI dilaporkan untuk semua estimasi?"},{title:"Studi Kasus: Merokok dan Kanker Paru",content:"Jurnal: Doll & Hill, 1950 (British Medical Journal)\nDesain: Kasus-Kontrol\n\nMetode:\n• 1.465 kasus kanker paru di RS London\n• 1.465 kontrol dari bangsal lain\n• Wawancara riwayat merokok\n\nHasil:\n• Perokok pada kasus: 96.6%\n• Perokok pada kontrol: 85.7%\n• OR = (1407×204) / (58×1261) = 3.9\n\nTelaah Kritis:\n✅ Temporalitas: merokok sebelum kanker\n✅ Kekuatan asosiasi: OR=3.9\n✅ Konsisten: direplikasi berkali-kali\n✅ Dosis-respons: perokok berat OR lebih tinggi\n\n⚠️ Bias recall: kasus mungkin lebih ingat merokok\n⚠️ Hospital control: Berkson's bias?\n\nKesimpulan: Bukti kuat faktor risiko (asosiasi kausal)"},{title:"Latihan Telaah Mandiri",content:"Langkah Telaah Jurnal Mandiri:\n\n1. VALIDITAS:\n□ Apakah desain sesuai pertanyaan?\n□ Apakah bias seleksi mungkin ada?\n□ Apakah bias informasi mungkin ada?\n□ Apakah confounding dikendalikan?\n\n2. KEPENTINGAN:\n□ Berapa nilai RR, OR, atau MD?\n□ Berapa 95% CI?\n□ Apakah CI melewati null?\n□ Berapa NNT atau NNH?\n\n3. APLIKABILITAS:\n□ Apakah populasi studi mirip pasien/masyarakat kita?\n□ Apakah intervensi tersedia di konteks kita?\n□ Apakah manfaat lebih besar dari bahaya?\n□ Apa nilai dan preferensi masyarakat?\n\nSumber Jurnal Gratis:\n• PubMed Central (PMC)\n• Cochrane Library\n• WHO IRIS\n• Litbang Kemenkes RI\n• Google Scholar"}]},
+  {id:16,title:"UAS",full:"Ujian Akhir Semester",icon:"🏆",color:"#FF9500",isExam:true,intro:"UAS menguji pemahaman komprehensif seluruh materi telaah ilmiah epidemiologi dengan penekanan pada kemampuan aplikasi dan analisis kritis.",sections:[{title:"Cakupan Materi UAS",content:"Materi UTS (30%):\n• Telaah kritis, hierarki bukti, PICO\n• Desain penelitian, epidemiologi deskriptif\n• Kohort, kasus-kontrol, ukuran asosiasi\n• Insidens dan prevalens\n\nMateri Pasca-UTS (70%):\n• Kausalitas (Bradford Hill)\n• Surveilans epidemiologi\n• Epidemiologi penyakit menular\n• Epidemiologi PTM dan skrining\n• Bias dan confounding\n• Systematic review dan meta-analisis\n• Studi kasus telaah jurnal"},{title:"Format Penilaian UAS",content:"PILIHAN GANDA — 25 soal (25%)\n• Konsep, definisi, interpretasi nilai\n• Identifikasi jenis bias\n• Kriteria Bradford Hill\n\nESAI ANALITIS — 3 soal (35%)\n• Jelaskan perbedaan SR dan literature review\n• Interpretasi forest plot\n• Evaluasi strategi pengendalian confounding\n\nTELAAH JURNAL KOMPREHENSIF — 1 jurnal (40%)\n• Jurnal diberikan saat ujian\n• Identifikasi PICO\n• Nilai validitas (bias dan confounding)\n• Interpretasi ukuran asosiasi dan CI\n• Nilai aplikabilitas hasil"},{title:"Contoh Soal Telaah Jurnal",content:"Jurnal: 'Hubungan Konsumsi Makanan Tinggi Garam dengan Hipertensi pada Usia 40-60 tahun di Kab. Bireuen'\nDesain: Cross-sectional\n\nHasil: PR = 2.3, 95%CI: 1.5–3.6, p=0.001\n\nPertanyaan:\n(a) Identifikasi PICO penelitian ini (10p)\n(b) Mengapa menggunakan PR, bukan OR? (10p)\n(c) Interpretasikan PR dan CI (15p)\n(d) Bias apa yang mungkin ada? Jelaskan! (20p)\n(e) Apakah temporalitas terpenuhi? (10p)\n(f) Apakah hasil dapat diterapkan di Pidie Jaya? (15p)\n(g) Sebutkan 3 kriteria Bradford Hill yang terpenuhi (20p)"},{title:"Penilaian Akhir & Tips Sukses",content:"Nilai Akhir:\nUAS 40% + UTS 30% + Tugas 20% + Kehadiran 10%\n\nGrade:\nA ≥81 | B 66-80 | C 56-65 | D 41-55 | E <41\n\nLulus minimal: C (56-65)\n\nTips Sukses UAS:\n\n① Kuasai tabel 2×2 → hitung RR, OR, CI\n\n② Hafal format PICO dan 9 Kriteria Bradford Hill\n\n③ Latihan baca dan telaah jurnal nyata\n\n④ Bedakan: bias seleksi vs bias informasi vs confounding\n\n⑤ Pahami perbedaan SR vs meta-analisis vs narrative review\n\n⑥ Latihan interpretasi forest plot dan nilai I²\n\n⑦ Selalu hubungkan ke konteks kesehatan Indonesia\n\nBismillah — semoga sukses! 🤲"},{title:"🏆 Latihan Soal UAS — 20 Soal Pilihan Ganda",content:"__QUIZ_UAS__"}]}
+];
+
+// ============================================================
+// SOAL UAS — 20 SOAL PILIHAN GANDA (Pertemuan 9–15)
+// ============================================================
+const soalUAS = [
+  {
+    no:1, topik:"Kausalitas Bradford Hill",
+    soal:"Kriteria Bradford Hill manakah yang menyatakan bahwa paparan harus mendahului outcome?",
+    opsi:["A. Kekuatan Asosiasi","B. Temporalitas","C. Konsistensi","D. Spesifisitas"],
+    jawaban:1,
+    penjelasan:"Temporalitas adalah satu-satunya kriteria yang WAJIB terpenuhi — sebab harus terjadi sebelum akibat. Tanpa temporalitas, kausalitas tidak bisa ditetapkan."
+  },
+  {
+    no:2, topik:"Kausalitas Bradford Hill",
+    soal:"Sebuah penelitian menemukan OR=8,5 antara paparan asbes dan mesotelioma. Kriteria Bradford Hill manakah yang paling terpenuhi?",
+    opsi:["A. Koherensi","B. Eksperimen","C. Kekuatan Asosiasi","D. Gradien Biologis"],
+    jawaban:2,
+    penjelasan:"OR=8,5 menunjukkan asosiasi yang sangat kuat. Semakin besar nilai RR/OR, semakin kuat kriteria 'Strength of Association' Bradford Hill terpenuhi."
+  },
+  {
+    no:3, topik:"Surveilans Epidemiologi",
+    soal:"Surveilans epidemiologi yang menggunakan data yang sudah tersedia (rekam medis, laporan kematian) disebut?",
+    opsi:["A. Surveilans Aktif","B. Surveilans Pasif","C. Surveilans Sentinel","D. Surveilans Berbasis Lab"],
+    jawaban:1,
+    penjelasan:"Surveilans pasif mengumpulkan data dari laporan rutin yang sudah ada tanpa mencari kasus secara aktif. Lebih murah namun underreporting lebih tinggi."
+  },
+  {
+    no:4, topik:"Surveilans Epidemiologi",
+    soal:"Dalam surveilans, R0 (Basic Reproduction Number) = 4 artinya?",
+    opsi:["A. Penyakit menyebar ke 4 negara","B. 1 kasus rata-rata menularkan ke 4 orang lain pada populasi yang sepenuhnya rentan","C. Herd immunity tercapai saat 40% populasi imun","D. CFR penyakit tersebut adalah 4%"],
+    jawaban:1,
+    penjelasan:"R0 adalah rata-rata jumlah kasus sekunder yang dihasilkan 1 kasus pada populasi yang sepenuhnya rentan. R0>1 berarti epidemi bisa terjadi."
+  },
+  {
+    no:5, topik:"Epidemiologi Penyakit Menular",
+    soal:"Herd Immunity Threshold (HIT) untuk campak dengan R0=15 adalah?",
+    opsi:["A. 75%","B. 85%","C. 93%","D. 67%"],
+    jawaban:2,
+    penjelasan:"HIT = 1 − (1/R0) = 1 − (1/15) = 1 − 0,067 = 0,933 ≈ 93%. Artinya 93% populasi harus imun untuk menghentikan penularan campak."
+  },
+  {
+    no:6, topik:"Epidemiologi Penyakit Menular",
+    soal:"Manakah yang termasuk transmisi TIDAK LANGSUNG penyakit menular?",
+    opsi:["A. Droplet dari bersin","B. Kontak kulit langsung","C. Nyamuk Aedes aegypti menularkan dengue (vektor)","D. Airborne TBC"],
+    jawaban:2,
+    penjelasan:"Transmisi melalui vektor (nyamuk, lalat) termasuk transmisi tidak langsung karena agen melewati perantara sebelum mencapai host baru."
+  },
+  {
+    no:7, topik:"Epidemiologi PTM",
+    soal:"Berdasarkan WHO, 4 PTM utama yang menyumbang kematian terbanyak global adalah?",
+    opsi:["A. Hipertensi, DM, TBC, HIV","B. Kardiovaskular, Kanker, Pernapasan Kronik, Diabetes","C. Stroke, Kanker, Malaria, PPOK","D. Jantung, Ginjal, Hati, Paru"],
+    jawaban:1,
+    penjelasan:"WHO menetapkan 4 PTM utama: Penyakit Kardiovaskular (17,9 juta/tahun), Kanker (9,3 juta), Penyakit Pernapasan Kronik (4,1 juta), dan Diabetes Mellitus (2 juta)."
+  },
+  {
+    no:8, topik:"Skrining",
+    soal:"Dari tabel 2×2 tes skrining: TP=90, FP=10, FN=30, TN=270. Berapa sensitivitas tes ini?",
+    opsi:["A. 90%","B. 75%","C. 96%","D. 50%"],
+    jawaban:1,
+    penjelasan:"Sensitivitas = TP/(TP+FN) = 90/(90+30) = 90/120 = 0,75 = 75%. Kemampuan tes mendeteksi yang benar-benar sakit adalah 75%."
+  },
+  {
+    no:9, topik:"Skrining",
+    soal:"Spesifisitas tes skrining yang tinggi berarti?",
+    opsi:["A. Sedikit yang lolos dari deteksi (false negative rendah)","B. Tes sangat baik mengidentifikasi orang yang benar-benar SEHAT (false positive rendah)","C. Nilai prediktif positif sangat tinggi","D. Semua kasus penyakit terdeteksi"],
+    jawaban:1,
+    penjelasan:"Spesifisitas = TN/(TN+FP). Spesifisitas tinggi = sedikit false positive = tes mampu menyingkirkan orang sehat dengan tepat."
+  },
+  {
+    no:10, topik:"Bias Seleksi",
+    soal:"Penelitian kohort tentang efek merokok pada pekerja pabrik mendapatkan RR lebih rendah dari yang diharapkan. Bias apakah yang paling mungkin?",
+    opsi:["A. Recall Bias","B. Berkson's Bias","C. Healthy Worker Effect","D. Loss to Follow-up Bias"],
+    jawaban:2,
+    penjelasan:"Healthy Worker Effect: pekerja aktif cenderung lebih sehat dari populasi umum (yang sakit berat tidak bekerja), sehingga risiko terlihat lebih rendah dari kenyataannya."
+  },
+  {
+    no:11, topik:"Bias Informasi",
+    soal:"Pada studi kasus-kontrol kanker payudara, kelompok kasus lebih mengingat penggunaan kontrasepsi hormonal di masa lalu dibanding kontrol. Ini disebut?",
+    opsi:["A. Observer Bias","B. Recall Bias","C. Misclassification Bias","D. Hawthorne Effect"],
+    jawaban:1,
+    penjelasan:"Recall Bias terjadi ketika kasus (yang sudah tahu dirinya sakit) lebih termotivasi untuk mengingat paparan di masa lalu dibandingkan kontrol — umum pada studi kasus-kontrol."
+  },
+  {
+    no:12, topik:"Confounding",
+    soal:"Penelitian menemukan hubungan kopi dengan kanker pankreas (OR=2,5). Setelah dikontrol merokok, OR menjadi 1,2. Kesimpulan yang tepat?",
+    opsi:["A. Merokok adalah effect modifier","B. Merokok adalah confounder yang menyebabkan overestimasi hubungan kopi-kanker","C. Kopi tetap berhubungan dengan kanker pankreas","D. Hasil penelitian tidak valid"],
+    jawaban:1,
+    penjelasan:"Perbedaan crude OR (2,5) vs adjusted OR (1,2) >10% menandakan confounding. Merokok adalah confounder karena berhubungan dengan kopi (paparan) DAN kanker (outcome)."
+  },
+  {
+    no:13, topik:"Confounding",
+    soal:"Cara terbaik mengendalikan confounding pada tahap DESAIN penelitian adalah?",
+    opsi:["A. Regresi logistik","B. Stratifikasi Mantel-Haenszel","C. Randomisasi","D. Propensity score matching"],
+    jawaban:2,
+    penjelasan:"Randomisasi (pada RCT) adalah cara terbaik mengendalikan confounding karena mendistribusikan semua variabel — dikenal maupun tidak dikenal — secara merata antara kelompok."
+  },
+  {
+    no:14, topik:"Systematic Review",
+    soal:"Dalam PRISMA, urutan fase yang benar adalah?",
+    opsi:["A. Skrining → Identifikasi → Kelayakan → Included","B. Identifikasi → Skrining → Kelayakan → Included","C. Kelayakan → Skrining → Identifikasi → Included","D. Identifikasi → Kelayakan → Skrining → Included"],
+    jawaban:1,
+    penjelasan:"Alur PRISMA: Identifikasi (cari di database) → Skrining (judul/abstrak, hapus duplikat) → Kelayakan (baca full-text) → Included (studi yang memenuhi kriteria)."
+  },
+  {
+    no:15, topik:"Meta-analisis & Forest Plot",
+    soal:"Pada forest plot, berlian di bagian bawah merepresentasikan?",
+    opsi:["A. Studi dengan risiko bias tertinggi","B. Pooled estimate (estimasi gabungan seluruh studi)","C. Studi dengan sampel terbesar","D. Batas confidence interval"],
+    jawaban:1,
+    penjelasan:"Berlian (diamond) pada baris terakhir forest plot adalah pooled estimate — hasil gabungan statistik semua studi. Lebar berlian menunjukkan lebar 95% CI."
+  },
+  {
+    no:16, topik:"Heterogenitas",
+    soal:"Nilai I² = 78% dalam meta-analisis menunjukkan?",
+    opsi:["A. Heterogenitas rendah — meta-analisis valid","B. Heterogenitas tinggi — hasil antar studi sangat bervariasi, meta-analisis perlu dikaji ulang","C. Bias publikasi tinggi","D. Kualitas bukti GRADE rendah"],
+    jawaban:1,
+    penjelasan:"I²>75% menunjukkan heterogenitas tinggi — variasi hasil antar studi sangat besar. Pooling statistik menjadi dipertanyakan; perlu subgroup analysis atau random effect model."
+  },
+  {
+    no:17, topik:"GRADE",
+    soal:"Manakah yang dapat MENINGKATKAN (upgrade) kualitas bukti dari studi observasional menurut GRADE?",
+    opsi:["A. Loss to follow-up tinggi","B. Populasi studi tidak representatif","C. Efek sangat besar (RR>2 atau <0,5) dan konsisten","D. CI sangat lebar"],
+    jawaban:2,
+    penjelasan:"GRADE dapat meng-upgrade bukti observasional jika: efek sangat besar (RR>2), ada gradien dosis-respons yang jelas, atau confounding justru melemahkan efek nyata."
+  },
+  {
+    no:18, topik:"Telaah Jurnal",
+    soal:"Alat telaah kritis standar yang digunakan untuk menilai kualitas pelaporan studi OBSERVASIONAL adalah?",
+    opsi:["A. CONSORT","B. PRISMA","C. STROBE","D. GRADE"],
+    jawaban:2,
+    penjelasan:"STROBE (Strengthening the Reporting of Observational Studies in Epidemiology) adalah checklist untuk studi observasional (kohort, kasus-kontrol, cross-sectional). CONSORT untuk RCT, PRISMA untuk systematic review."
+  },
+  {
+    no:19, topik:"Interpretasi Hasil",
+    soal:"Jurnal melaporkan: PR=1,8, 95%CI: 1,2–2,7, p=0,003, desain cross-sectional. Interpretasi yang PALING tepat?",
+    opsi:["A. Tidak bermakna karena PR terlalu kecil","B. Bermakna secara statistik; kelompok terpapar 1,8× lebih mungkin mengalami outcome","C. Bermakna tapi tidak dapat disimpulkan kausalitas karena temporalitas tidak terjamin","D. B dan C keduanya benar"],
+    jawaban:3,
+    penjelasan:"PR>1, CI tidak melewati 1, p<0,05 → bermakna statistik (B benar). Namun cross-sectional tidak menjamin temporalitas sehingga kausalitas tidak bisa disimpulkan langsung (C benar). Keduanya benar."
+  },
+  {
+    no:20, topik:"Aplikasi Komprehensif",
+    soal:"Sebuah systematic review dengan 12 RCT mendapatkan pooled RR=0,65, 95%CI: 0,52–0,81, I²=18%, GRADE: High. Kesimpulan terbaik?",
+    opsi:["A. Bukti tidak cukup kuat karena hanya 12 studi","B. Intervensi terbukti protektif (menurunkan risiko 35%), bukti berkualitas tinggi, heterogenitas rendah — layak diterapkan","C. Hasil tidak signifikan karena RR tidak mendekati 0","D. Perlu meta-analisis ulang karena I² terlalu rendah"],
+    jawaban:1,
+    penjelasan:"RR=0,65 (<1) → protektif, menurunkan risiko 35%. CI 0,52–0,81 tidak melewati 1 → signifikan. I²=18% → heterogenitas rendah (baik). GRADE High → bukti paling kuat. Ini adalah hasil yang sangat mendukung penerapan intervensi."
+  }
+];
+
+// ============================================================
+// SOAL UTS — 20 SOAL PILIHAN GANDA
+// ============================================================
+const soalUTS = [
+  {
+    no:1, topik:"Hierarki Bukti",
+    soal:"Manakah desain penelitian yang berada di puncak hierarki bukti ilmiah?",
+    opsi:["A. Studi Kohort","B. Randomized Controlled Trial (RCT)","C. Systematic Review dan Meta-analisis","D. Studi Kasus-Kontrol"],
+    jawaban:2,
+    penjelasan:"Systematic Review & Meta-analisis mensintesis seluruh bukti dari banyak RCT sehingga berada di puncak piramida bukti."
+  },
+  {
+    no:2, topik:"Format PICO",
+    soal:"Dalam format PICO, huruf 'C' merujuk pada?",
+    opsi:["A. Condition (kondisi penyakit)","B. Comparison (pembanding/kontrol)","C. Cause (penyebab)","D. Confidence (tingkat kepercayaan)"],
+    jawaban:1,
+    penjelasan:"PICO = Population, Intervention, Comparison, Outcome. 'C' adalah kelompok pembanding atau intervensi alternatif."
+  },
+  {
+    no:3, topik:"Desain Penelitian",
+    soal:"Peneliti ingin mengetahui apakah paparan asap rokok berhubungan dengan ISPA pada anak. Data dikumpulkan satu kali pada saat yang sama. Desain apakah yang digunakan?",
+    opsi:["A. Studi Kohort Prospektif","B. Studi Kasus-Kontrol","C. Studi Potong Lintang (Cross-sectional)","D. Randomized Controlled Trial"],
+    jawaban:2,
+    penjelasan:"Cross-sectional mengukur paparan dan outcome secara bersamaan dalam satu titik waktu."
+  },
+  {
+    no:4, topik:"Studi Kohort",
+    soal:"Dalam studi kohort, ukuran asosiasi yang digunakan adalah?",
+    opsi:["A. Odds Ratio (OR)","B. Relative Risk / Risk Ratio (RR)","C. Prevalence Ratio (PR)","D. Hazard Ratio (HR) saja"],
+    jawaban:1,
+    penjelasan:"Studi kohort mengikuti kelompok terpapar dan tidak terpapar ke depan, sehingga dapat menghitung insiden dan RR secara langsung."
+  },
+  {
+    no:5, topik:"Studi Kasus-Kontrol",
+    soal:"Studi kasus-kontrol TIDAK dapat menghitung Relative Risk secara langsung karena?",
+    opsi:["A. Jumlah kasus terlalu sedikit","B. Peneliti memilih kasus dan kontrol, bukan mengikuti kohort","C. Hanya cocok untuk penyakit infeksi","D. Tidak memerlukan kelompok pembanding"],
+    jawaban:1,
+    penjelasan:"Dalam kasus-kontrol, proporsi kasus/kontrol ditentukan peneliti, bukan mencerminkan insiden di populasi asli — sehingga RR tidak bisa dihitung, melainkan OR."
+  },
+  {
+    no:6, topik:"Tabel 2×2",
+    soal:"Dari tabel 2×2: a=40, b=10, c=8, d=42. Berapa nilai Odds Ratio (OR)?",
+    opsi:["A. 5,0","B. 21,0","C. 2,5","D. 4,5"],
+    jawaban:1,
+    penjelasan:"OR = (a×d)/(b×c) = (40×42)/(10×8) = 1680/80 = 21,0"
+  },
+  {
+    no:7, topik:"Ukuran Asosiasi",
+    soal:"RR = 3,5 dengan 95% CI: 2,1 – 5,8. Kesimpulan yang tepat adalah?",
+    opsi:["A. Tidak ada hubungan karena CI lebar","B. Hubungan bermakna: kelompok terpapar 3,5× lebih berisiko","C. Hubungan protektif","D. Hasil tidak dapat diinterpretasi"],
+    jawaban:1,
+    penjelasan:"RR>1 dan CI tidak melewati angka 1 (null value) → hubungan bermakna secara statistik. Kelompok terpapar 3,5× lebih berisiko."
+  },
+  {
+    no:8, topik:"Insidens & Prevalens",
+    soal:"Prevalens penyakit X di kota A adalah 200/1.000 penduduk. Insidens rate 20/1.000/tahun. Berapa rata-rata durasi penyakit tersebut (Rumus P = I × D)?",
+    opsi:["A. 5 tahun","B. 10 tahun","C. 20 tahun","D. 2 tahun"],
+    jawaban:1,
+    penjelasan:"P = I × D → D = P/I = (200/1000) / (20/1000) = 200/20 = 10 tahun."
+  },
+  {
+    no:9, topik:"Insidens Kumulatif",
+    soal:"Dari 1.000 orang yang diamati selama 1 tahun, 50 orang menjadi sakit. Insidens kumulatifnya adalah?",
+    opsi:["A. 5 per 100","B. 50 per 1000 per tahun","C. 0,05 atau 5%","D. A dan C benar"],
+    jawaban:3,
+    penjelasan:"CI = 50/1000 = 0,05 = 5% = 5 per 100. Semua ekspresi itu setara, sehingga A dan C keduanya benar."
+  },
+  {
+    no:10, topik:"Attributable Risk",
+    soal:"Insidens pada kelompok terpapar = 0,12, insidens kelompok tidak terpapar = 0,04. Berapa Attributable Risk (AR)?",
+    opsi:["A. 0,08","B. 3,0","C. 0,16","D. 0,48"],
+    jawaban:0,
+    penjelasan:"AR = Ie − Io = 0,12 − 0,04 = 0,08 (8% kasus pada kelompok terpapar yang disebabkan oleh paparan)."
+  },
+  {
+    no:11, topik:"RR & Interpretasi",
+    soal:"Sebuah studi kohort mendapatkan RR = 0,4. Interpretasi yang benar adalah?",
+    opsi:["A. Paparan meningkatkan risiko 2,5 kali","B. Paparan bersifat protektif — menurunkan risiko 60%","C. Tidak ada asosiasi","D. Paparan meningkatkan risiko 40%"],
+    jawaban:1,
+    penjelasan:"RR < 1 berarti paparan bersifat protektif. Penurunan risiko = (1−0,4)×100% = 60%."
+  },
+  {
+    no:12, topik:"NNT",
+    soal:"Absolute Risk Reduction (ARR) dari suatu intervensi adalah 0,05. Berapa Number Needed to Treat (NNT)?",
+    opsi:["A. 5","B. 20","C. 50","D. 0,05"],
+    jawaban:1,
+    penjelasan:"NNT = 1/ARR = 1/0,05 = 20. Artinya 20 orang harus mendapat intervensi agar 1 kasus dapat dicegah."
+  },
+  {
+    no:13, topik:"Desain Penelitian",
+    soal:"Manakah desain penelitian yang paling tepat untuk mengetahui prevalens hipertensi di Kab. Bireuen tahun 2024?",
+    opsi:["A. Studi Kohort Prospektif","B. Randomized Controlled Trial","C. Studi Potong Lintang (Cross-sectional)","D. Studi Kasus-Kontrol"],
+    jawaban:2,
+    penjelasan:"Cross-sectional ideal untuk mengukur prevalens karena pengukuran dilakukan pada satu titik waktu di populasi tertentu."
+  },
+  {
+    no:14, topik:"Epidemiologi Deskriptif",
+    soal:"Variabel 'Tempat' (Place) dalam epidemiologi deskriptif berguna untuk?",
+    opsi:["A. Menentukan usia kelompok berisiko","B. Mengidentifikasi pola geografis distribusi penyakit","C. Menghitung angka kematian","D. Menetapkan jenis intervensi"],
+    jawaban:1,
+    penjelasan:"Variabel Place membantu mengidentifikasi apakah ada kluster geografis, daerah endemis, atau pola distribusi spasial penyakit."
+  },
+  {
+    no:15, topik:"Angka Mortalitas",
+    soal:"CFR (Case Fatality Rate) berbeda dengan mortalitas rate umum karena CFR menggunakan penyebut berupa?",
+    opsi:["A. Total penduduk","B. Hanya kasus yang terkonfirmasi penyakit tersebut","C. Penduduk usia produktif saja","D. Jumlah kematian dalam setahun"],
+    jawaban:1,
+    penjelasan:"CFR = (Jumlah kematian akibat penyakit X / Jumlah kasus penyakit X) × 100%. Penyebutnya hanya kasus penyakit itu, bukan total populasi."
+  },
+  {
+    no:16, topik:"Studi Kohort",
+    soal:"Kelemahan utama studi kohort prospektif adalah?",
+    opsi:["A. Tidak dapat menghitung RR","B. Waktu lama dan biaya mahal, terutama untuk penyakit dengan latensi panjang","C. Tidak bisa digunakan untuk penyakit menular","D. Rentan terhadap recall bias"],
+    jawaban:1,
+    penjelasan:"Kohort prospektif mengikuti subjek dari paparan hingga outcome muncul — untuk penyakit kronis ini bisa memakan waktu 10–20 tahun dengan biaya sangat besar."
+  },
+  {
+    no:17, topik:"Studi Kasus-Kontrol",
+    soal:"Matching pada studi kasus-kontrol bertujuan untuk?",
+    opsi:["A. Meningkatkan jumlah sampel","B. Mengendalikan confounding dari variabel yang di-match","C. Mempercepat pengumpulan data","D. Menghilangkan bias informasi"],
+    jawaban:1,
+    penjelasan:"Dengan menyamakan karakteristik tertentu (misal umur, jenis kelamin) antara kasus dan kontrol, variabel tersebut tidak dapat lagi menjadi confounder."
+  },
+  {
+    no:18, topik:"EBP",
+    soal:"Evidence-Based Practice (EBP) dalam epidemiologi menggabungkan tiga komponen utama, yaitu?",
+    opsi:["A. Data, statistik, dan populasi","B. Bukti ilmiah terbaik, keahlian klinis, dan nilai/preferensi pasien","C. Survei, wawancara, dan observasi","D. Insidens, prevalens, dan mortalitas"],
+    jawaban:1,
+    penjelasan:"EBP = Best research evidence + Clinical expertise + Patient values & preferences. Ketiga komponen ini harus diintegrasikan dalam pengambilan keputusan."
+  },
+  {
+    no:19, topik:"Confidence Interval",
+    soal:"Hasil penelitian: OR = 2,1, 95% CI: 0,8 – 5,4. Kesimpulan statistik yang tepat?",
+    opsi:["A. Bermakna, OR menunjukkan risiko lebih tinggi","B. Tidak bermakna secara statistik karena CI mencakup angka 1","C. Bermakna karena OR > 1","D. Tidak bermakna karena sampel kecil"],
+    jawaban:1,
+    penjelasan:"CI 0,8–5,4 mencakup angka 1 (null value) → hasilnya tidak bermakna secara statistik (p > 0,05). Asosiasi mungkin hanya karena kebetulan."
+  },
+  {
+    no:20, topik:"Tabel 2×2 & Kohort",
+    soal:"Dalam studi kohort, dari 200 perokok ada 30 kanker paru dan dari 200 bukan perokok ada 6 kanker paru. Berapa RR dan Attributable Fraction (AF%)?",
+    opsi:["A. RR=5; AF%=80%","B. RR=4; AF%=75%","C. RR=5; AF%=60%","D. RR=3; AF%=67%"],
+    jawaban:0,
+    penjelasan:"Ie=30/200=0,15; Io=6/200=0,03. RR=0,15/0,03=5. AF%=(RR−1)/RR×100=(5−1)/5×100=80%. Artinya 80% kasus kanker pada perokok berkaitan dengan merokok."
+  }
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let dark=false, currentTab='home', selM=null, selS=null, readState={};
+let quizState=null; // {answers:[], submitted:false, nama:'', nim:'', email:''}
+
+function toggleRead(mid,sid){const k=`${mid}-${sid}`;readState[k]=!readState[k];render();}
+function isRead(mid,sid){return !!readState[`${mid}-${sid}`];}
+function getProgress(mid){const m=meetings.find(x=>x.id===mid);if(!m)return 0;const d=m.sections.filter((_,i)=>readState[`${mid}-${i}`]).length;return Math.round((d/m.sections.length)*100);}
+function totalProgress(){let t=0,d=0;meetings.forEach(m=>m.sections.forEach((_,i)=>{t++;if(readState[`${m.id}-${i}`])d++;}));return t>0?Math.round((d/t)*100):0;}
+
+function progressRingSVG(pct,size,stroke,color){
+  const r=(size-stroke)/2,circ=2*Math.PI*r,off=circ-(pct/100)*circ;
+  return `<svg width="${size}" height="${size}" style="transform:rotate(-90deg)">
+    <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--sep)" stroke-width="${stroke}"/>
+    <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-dasharray="${circ}" stroke-dashoffset="${off}" stroke-linecap="round" style="transition:stroke-dashoffset 0.6s cubic-bezier(0.4,0,0.2,1)"/>
+    <text x="${size/2}" y="${size/2}" text-anchor="middle" dominant-baseline="central" fill="var(--text)" font-size="${size*0.26}" font-weight="800" letter-spacing="-0.02em" style="transform:rotate(90deg);transform-box:fill-box;transform-origin:center">${pct}%</text>
+  </svg>`;}
+
+function chevSVG(){return `<svg class="chev" width="8" height="14" viewBox="0 0 8 14"><path d="M1 1l6 6-6 6" stroke="var(--text-muted)" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`;}
+function backSVG(){return `<svg width="10" height="16" viewBox="0 0 10 16"><path d="M8.5 1L1.5 8l7 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`;}
+
+// ============================================================
+// RENDER HOME
+// ============================================================
+function renderHome(){
+  const tp=totalProgress();
+  const qCards=meetings.slice(0,6).map(m=>{const p=getProgress(m.id);return `<div class="quick-card" onclick="openMeeting(${m.id})"><div style="font-size:30px;margin-bottom:8px">${m.icon}</div><div style="font-size:11px;color:${m.color};font-weight:700;margin-bottom:2px;letter-spacing:0.02em">P${m.id}</div><div style="font-size:14px;font-weight:600;color:var(--text);line-height:1.3;margin-bottom:10px;letter-spacing:-0.01em">${m.title}</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="background:${m.color};width:${p}%"></div></div></div>`;}).join('');
+  const infoRows=[{l:"Institusi",v:"UMMAH",i:"🏛️"},{l:"Total Pertemuan",v:"16",i:"📅"},{l:"Evaluasi",v:"UTS + UAS",i:"📝"},{l:"Acuan",v:"EBP & Bradford Hill",i:"📖"}];
+  const infoHTML=infoRows.map((x,i)=>`<div class="info-row" style="${i===3?'border-bottom:none':''}"><span style="font-size:24px;margin-right:14px">${x.i}</span><span class="info-label">${x.l}</span><span class="info-val">${x.v}</span></div>`).join('');
+  const msg=tp===0?"Mulai perjalananmu!":tp===100?"Semua selesai! 🎉":`${tp}% materi dipelajari`;
+  return `<div class="page">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+      <div><h1 style="font-size:28px;font-weight:800;color:var(--text);line-height:1.1;letter-spacing:-0.02em">Telaah Ilmiah</h1><p style="font-size:14px;color:var(--text-muted);margin-top:4px;font-weight:500">Epidemiologi — UMMAH</p></div>
+      <button id="dark-toggle" onclick="toggleDark()">${dark?"☀️":"🌙"}</button>
+    </div>
+    <div class="hero-card">${progressRingSVG(tp,68,5,"#34C759")}<div style="position:relative;z-index:1"><div style="font-size:20px;font-weight:800;letter-spacing:-0.02em">Progres Belajar</div><div style="font-size:14px;opacity:0.75;margin-top:4px;font-weight:500">${msg}</div></div></div>
+    <div class="section-label">Lanjutkan Belajar</div>
+    <div class="quick-scroll">${qCards}</div>
+    <div class="section-label">Tentang Mata Kuliah</div>
+    <div class="card">${infoHTML}</div>
+  </div>`;}
+
+// ============================================================
+// RENDER MATERI LIST
+// ============================================================
+function renderMateri(){
+  const rows=meetings.map((m,i)=>{const p=getProgress(m.id);const ring=p>0?progressRingSVG(p,32,2.5,p===100?"#34C759":m.color):'';
+  return `<div class="list-item" onclick="openMeeting(${m.id})" style="${i===meetings.length-1?'border-bottom:none':''}"><div style="width:44px;height:44px;border-radius:13px;margin-right:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px;background:${m.color}15">${m.icon}</div><div style="flex:1;min-width:0"><div style="font-size:11px;color:${m.isExam?"#AF52DE":m.color};font-weight:700;letter-spacing:0.02em">Pertemuan ${m.id}${m.isExam?" • Evaluasi":""}</div><div style="font-size:16px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-0.01em">${m.title}</div></div><div style="display:flex;align-items:center;gap:8px;flex-shrink:0">${ring}${chevSVG()}</div></div>`;}).join('');
+  return `<div class="page"><h1 class="page-title">Materi</h1><div class="card">${rows}</div></div>`;}
+
+// ============================================================
+// RENDER PROGRESS
+// ============================================================
+function renderProgress(){
+  const tp=totalProgress(),done=meetings.filter(m=>getProgress(m.id)===100).length;
+  const list=meetings.map(m=>{const p=getProgress(m.id);return `<div class="prog-list-item"><span style="font-size:22px">${m.icon}</span><div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--text);letter-spacing:-0.01em">P${m.id}. ${m.title}</div><div class="prog-bar-bg thick" style="margin-top:8px"><div class="prog-bar-fill" style="background:${p===100?"#34C759":m.color};width:${p}%"></div></div></div><span style="font-size:14px;font-weight:700;color:${p===100?"#34C759":"var(--text-muted)"}">${p}%</span></div>`;}).join('');
+  return `<div class="page"><h1 class="page-title">Progres</h1><div class="prog-center">${progressRingSVG(tp,130,9,"#34C759")}</div><div class="stat-grid"><div class="stat-card"><div class="stat-num" style="color:#34C759">${done}</div><div class="stat-label">Selesai</div><div class="stat-sub">dari 16</div></div><div class="stat-card"><div class="stat-num" style="color:#FF9500">${16-done}</div><div class="stat-label">Sisa</div><div class="stat-sub">lagi</div></div></div><div>${list}</div></div>`;}
+
+// ============================================================
+// RENDER MEETING DETAIL
+// ============================================================
+function renderMeetingDetail(m){
+  const p=getProgress(m.id);
+  const secHTML=m.sections.map((sec,i)=>{const d=isRead(m.id,i);return `<div class="section-row" onclick="openSection(${m.id},${i})" style="${i===m.sections.length-1?'border-bottom:none':''}"><div class="section-num" style="background:${d?"#34C759":m.color+"15"};color:${d?"#fff":m.color}">${d?"✓":i+1}</div><div class="section-title-text">${sec.title}</div>${chevSVG()}</div>`;}).join('');
+  const visualHTML = visuals[m.id] ? `<div class="visual-card"><div class="visual-card-title">📊 Visualisasi Konsep</div>${visuals[m.id]}</div>` : '';
+  return `<div>
+    <div class="back-row"><button class="back-btn" onclick="goBack('materi')">${backSVG()} Materi</button></div>
+    <div class="page" style="padding-top:0">
+      <div class="meeting-header" style="background:linear-gradient(145deg,${m.color},${m.color}BB)">
+        <div class="m-icon">${m.icon}</div>
+        <div class="m-sub">Pertemuan ${m.id}${m.isExam?" • Evaluasi":""}</div>
+        <h2>${m.full}</h2>
+        <div class="meeting-prog-bg"><div class="meeting-prog-fill" style="width:${p}%"></div></div>
+        <div class="meeting-prog-pct">${p}% selesai</div>
+      </div>
+      <div class="meeting-intro">${m.intro}</div>
+      ${visualHTML}
+      <div class="section-label" style="margin-bottom:8px">Materi Pembahasan</div>
+      <div class="card">${secHTML}</div>
+      <div class="confirm-card">
+        <div class="confirm-title">✅ Sudah selesai membaca?</div>
+        <div class="confirm-desc">Klik tombol di bawah untuk mengirim konfirmasi kehadiran baca kepada dosen.</div>
+        <a href="${buildFormURL(m)}" target="_blank" rel="noopener" class="confirm-link" style="background:${m.color}">📋 Kirim Konfirmasi ke Dosen</a>
+      </div>
+    </div>
+  </div>`;}
+
+// ============================================================
+// RENDER SECTION DETAIL — routes to quiz if needed
+// ============================================================
+function renderSectionDetail(m,si){
+  const sec=m.sections[si];
+  if(sec&&sec.content==='__QUIZ_UTS__') return renderQuizSection(m,si,'UTS');
+  if(sec&&sec.content==='__QUIZ_UAS__') return renderQuizSection(m,si,'UAS');
+  return renderSectionDetailOrig(m,si);
+}
+function escHTML(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ============================================================
+// RENDER SECTION DETAIL — with QUIZ support
+// ============================================================
+function renderSectionDetailOrig(m,si){
+  const sec=m.sections[si],done=isRead(m.id,si);
+  const btnStyle=done?`background:var(--sep);color:var(--text-muted)`:`background:${m.color};color:#fff`;
+  const nextBtn=si<m.sections.length-1?`<button class="next-btn" onclick="openSection(${m.id},${si+1})">Materi Selanjutnya →</button>`:'';
+  return `<div>
+    <div class="back-row"><button class="back-btn" onclick="goBackToMeeting(${m.id})">${backSVG()} Kembali</button></div>
+    <div class="page" style="padding-top:0">
+      <div class="pertemuan-badge" style="background:${m.color}15;color:${m.color}">Pertemuan ${m.id}</div>
+      <h2 style="font-size:26px;font-weight:800;color:var(--text);line-height:1.15;margin-bottom:20px;letter-spacing:-0.02em">${sec.title}</h2>
+      <div class="section-content-box">${escHTML(sec.content)}</div>
+      <button class="mark-btn" style="${btnStyle}" onclick="toggleRead(${m.id},${si})">${done?"✓ Sudah Dibaca":"Tandai Sudah Dibaca"}</button>
+      ${nextBtn}
+    </div>
+  </div>`;}
+
+// ============================================================
+// QUIZ FUNCTIONS
+// ============================================================
+function startQuiz(type){
+  quizState={answers:Array(type==='UAS'?soalUAS.length:soalUTS.length).fill(null),submitted:false,nama:'',nim:'',email:'',type:type||'UTS'};
+  render();
+}
+function selectAnswer(qi,oi){
+  if(quizState&&!quizState.submitted){quizState.answers[qi]=oi;render();}
+}
+function submitQuiz(){
+  if(!quizState)return;
+  const nama=document.getElementById('q-nama')?document.getElementById('q-nama').value.trim():'';
+  const nim=document.getElementById('q-nim')?document.getElementById('q-nim').value.trim():'';
+  const email=document.getElementById('q-email')?document.getElementById('q-email').value.trim():'';
+  if(!nama||!nim||!email){alert('Lengkapi Nama, NIM, dan Email terlebih dahulu!');return;}
+  const soalArr=quizState.type==='UAS'?soalUAS:soalUTS;
+  const unanswered=quizState.answers.filter(a=>a===null).length;
+  if(unanswered>0){if(!confirm(`Masih ada ${unanswered} soal belum dijawab. Kirim sekarang?`))return;}
+  quizState.nama=nama;quizState.nim=nim;quizState.email=email;
+  quizState.submitted=true;
+  render();
+  setTimeout(()=>sendToGoogleForms(),300);
+}
+function getScore(){
+  if(!quizState)return 0;
+  const soalArr=quizState.type==='UAS'?soalUAS:soalUTS;
+  return quizState.answers.reduce((s,a,i)=>s+(a===soalArr[i].jawaban?1:0),0);
+}
+function sendToGoogleForms(){
+  const soalArr=quizState.type==='UAS'?soalUAS:soalUTS;
+  const skor=getScore();
+  const total=soalArr.length;
+  const pct=Math.round((skor/total)*100);
+  const grade=pct>=81?'A':pct>=66?'B':pct>=56?'C':pct>=41?'D':'E';
+  const label=quizState.type==='UAS'?'UAS':'UTS';
+  const pertemuan=quizState.type==='UAS'?'Pertemuan 16 - UAS':'Pertemuan 8 - UTS';
+  const judul=`Latihan ${label} — Skor ${skor}/${total} (${pct}%) Grade ${grade}`;
+  const jawaban=quizState.answers.map((a,i)=>`Q${i+1}:${a!==null?['A','B','C','D'][a]:'?'}(${a===soalArr[i].jawaban?'✓':'✗'})`).join(' | ');
+  const pernyataan=`Skor: ${skor}/${total} (${pct}%) | Grade: ${grade} | Jawaban: ${jawaban}`;
+
+  // ── Entry ID mapping (dari Google Forms Inspector) ──
+  // entry.1172022287 = Nama
+  // entry.1517484372 = NIM
+  // entry.1349073719 = Pertemuan
+  // entry.2051643814 = Judul Materi
+  // entry.1959448750 = Pernyataan
+
+  const FORM_ACTION='https://docs.google.com/forms/d/e/1FAIpQLSfrUm7096iZhLvEVVNo-uWLeSfaOJBe28yhcp0ASN-xqJMmvw/formResponse';
+
+  const body=new URLSearchParams({
+    'entry.1172022287': quizState.nama,
+    'entry.1517484372': quizState.nim,
+    'entry.1349073719': pertemuan,
+    'entry.2051643814': judul,
+    'entry.1959448750': pernyataan,
+    'emailAddress': quizState.email
+  });
+
+  // Kirim otomatis via fetch (no-cors) — langsung masuk spreadsheet
+  fetch(FORM_ACTION, {
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body: body.toString()
+  }).then(()=>{
+    quizState.terkirim=true;
+    render();
+    showSuccessModal(skor,total,pct,grade,label);
+  }).catch(()=>{
+    // Fallback: buka form manual jika fetch gagal
+    const fallbackUrl=`${FORM_ACTION.replace('/formResponse','/viewform')}?usp=pp_url`
+      +`&entry.1172022287=${encodeURIComponent(quizState.nama)}`
+      +`&entry.1517484372=${encodeURIComponent(quizState.nim)}`
+      +`&entry.1349073719=${encodeURIComponent(pertemuan)}`
+      +`&entry.2051643814=${encodeURIComponent(judul)}`
+      +`&entry.1959448750=${encodeURIComponent(pernyataan)}`;
+    showSuccessModal(skor,total,pct,grade,label,fallbackUrl);
+  });
+}
+
+function showSuccessModal(skor,total,pct,grade,label,fallbackUrl){
+  const modal=document.getElementById('form-modal');
+  if(!modal)return;
+  const gc=pct>=81?'#34C759':pct>=66?'#007AFF':pct>=56?'#FF9500':'#FF3B30';
+  modal.querySelector('.modal-score').textContent=`${skor}/${total} (${pct}%)`;
+  modal.querySelector('.modal-nama').textContent=quizState.nama;
+  modal.querySelector('.modal-nim').textContent=quizState.nim;
+  modal.querySelector('.modal-grade').textContent=grade;
+  modal.querySelector('.modal-grade').style.color=gc;
+  modal.querySelector('.modal-label').textContent=`Latihan Soal ${label}`;
+  const btn=modal.querySelector('.modal-form-btn');
+  if(fallbackUrl){
+    // fetch gagal — tampilkan tombol buka form manual
+    btn.textContent='📋 Buka Google Forms (Kirim Manual)';
+    btn.onclick=()=>{window.open(fallbackUrl,'_blank');modal.style.display='none';};
+    modal.querySelector('.modal-status').textContent='⚠️ Kirim otomatis gagal. Klik tombol di bawah untuk kirim manual.';
+    modal.querySelector('.modal-status').style.color='#FF9500';
+  } else {
+    // fetch berhasil
+    btn.textContent='✅ Berhasil Dikirim ke Dosen!';
+    btn.style.background='#34C759';
+    btn.onclick=()=>{modal.style.display='none';};
+    modal.querySelector('.modal-status').textContent='✅ Data sudah masuk ke spreadsheet dosen secara otomatis.';
+    modal.querySelector('.modal-status').style.color='#34C759';
+  }
+  modal.style.display='flex';
+}
+function closeModal(){const m=document.getElementById('form-modal');if(m)m.style.display='none';}
+function resetQuiz(){quizState=null;render();}
+
+function renderQuizSection(m,si,quizType){
+  const soalArr=quizType==='UAS'?soalUAS:soalUTS;
+  const label=quizType==='UAS'?'UAS':'UTS';
+  const icon=quizType==='UAS'?'🏆':'🧪';
+  const coverTopik=quizType==='UAS'
+    ?'Kausalitas, Surveilans, PM, PTM, Bias, SR/Meta-analisis, Telaah Jurnal'
+    :'Hierarki Bukti, PICO, Desain, Kohort, Kasus-Kontrol, Ukuran Asosiasi, Insidens & Prevalens';
+
+  if(!quizState||quizState.type!==quizType){
+    return `<div>
+      <div class="back-row"><button class="back-btn" onclick="goBackToMeeting(${m.id})">${backSVG()} Kembali</button></div>
+      <div class="page" style="padding-top:0">
+        <div class="pertemuan-badge" style="background:${m.color}15;color:${m.color}">Pertemuan ${m.id} • ${label}</div>
+        <h2 style="font-size:24px;font-weight:800;color:var(--text);line-height:1.2;margin-bottom:16px;letter-spacing:-0.02em">${icon} Latihan Soal ${label}</h2>
+        <div style="background:var(--card);border-radius:18px;padding:22px;box-shadow:var(--card-shadow);margin-bottom:16px">
+          <div style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:12px">📋 Petunjuk Pengerjaan</div>
+          <div style="font-size:15px;color:var(--text-secondary);line-height:1.9">
+            <div>• <b>20 soal</b> pilihan ganda (A–D)</div>
+            <div>• Topik: ${coverTopik}</div>
+            <div>• Setiap soal bernilai <b>1 poin</b> (total 20)</div>
+            <div>• Hasil dikirim ke dosen via <b>Google Forms</b></div>
+            <div>• Isi Nama, NIM, dan Email sebelum submit</div>
+          </div>
+        </div>
+        <div style="background:linear-gradient(135deg,${m.color},${m.color}BB);border-radius:18px;padding:20px;margin-bottom:16px;color:#fff">
+          <div style="font-size:14px;opacity:0.85;margin-bottom:8px;font-weight:600">Bobot Nilai</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            ${['A ≥81%','B 66–80%','C 56–65%','D 41–55%'].map(g=>`<div style="background:rgba(255,255,255,0.2);border-radius:10px;padding:7px 12px;font-size:13px;font-weight:700">${g}</div>`).join('')}
+          </div>
+        </div>
+        <button class="mark-btn" style="background:${m.color};color:#fff" onclick="startQuiz('${quizType}')">🚀 Mulai Latihan Soal ${label}</button>
+      </div>
+    </div>`;
+  }
+
+  if(quizState.submitted){
+    const skor=getScore();
+    const total=soalArr.length;
+    const pct=Math.round((skor/total)*100);
+    const grade=pct>=81?'A':pct>=66?'B':pct>=56?'C':pct>=41?'D':'E';
+    const gc=pct>=81?'#34C759':pct>=66?'#007AFF':pct>=56?'#FF9500':'#FF3B30';
+    const msg=pct>=81?'Sangat Baik 🎉':pct>=66?'Baik 👍':pct>=56?'Cukup 📚':'Perlu Belajar Lagi 💪';
+    const pembahasanHTML=soalArr.map((s,i)=>{
+      const ua=quizState.answers[i];
+      const benar=ua===s.jawaban;
+      return `<div style="background:var(--card);border-radius:14px;padding:16px 18px;margin-bottom:10px;box-shadow:var(--card-shadow);border-left:4px solid ${benar?'#34C759':'#FF3B30'}">
+        <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px">${s.topik}</div>
+        <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px">${s.no}. ${s.soal}</div>
+        ${s.opsi.map((o,oi)=>{
+          let bg='var(--sep)';let fc='var(--text-muted)';
+          if(oi===s.jawaban){bg='#34C75920';fc='#34C759';}
+          else if(oi===ua&&!benar){bg='#FF3B3020';fc='#FF3B30';}
+          return `<div style="background:${bg};border-radius:8px;padding:7px 12px;margin-bottom:4px;font-size:13px;color:${fc};font-weight:${oi===s.jawaban?'700':'400'}">${o}${oi===s.jawaban?' ✓':oi===ua&&!benar?' ✗':''}</div>`;
+        }).join('')}
+        <div style="margin-top:10px;font-size:13px;color:var(--text-secondary);line-height:1.6;background:var(--tint-bg);padding:10px 12px;border-radius:8px">💡 ${s.penjelasan}</div>
+      </div>`;
+    }).join('');
+    return `<div>
+      <div class="back-row"><button class="back-btn" onclick="goBackToMeeting(${m.id})">${backSVG()} Kembali</button></div>
+      <div class="page" style="padding-top:0">
+        <div style="background:linear-gradient(135deg,${gc},${gc}BB);border-radius:22px;padding:28px 24px;margin-bottom:20px;color:#fff;text-align:center">
+          <div style="font-size:14px;font-weight:700;opacity:0.8;margin-bottom:4px">Latihan Soal ${label}</div>
+          <div style="font-size:56px;font-weight:900;letter-spacing:-0.03em">${skor}<span style="font-size:28px;opacity:0.7">/${total}</span></div>
+          <div style="font-size:32px;font-weight:800;margin-top:4px">Grade ${grade}</div>
+          <div style="font-size:15px;opacity:0.8;margin-top:6px">${pct}% — ${msg}</div>
+          <div style="margin-top:14px;font-size:14px;opacity:0.75">${quizState.nama} • ${quizState.nim}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px">
+          <div style="background:var(--card);border-radius:14px;padding:14px;text-align:center;box-shadow:var(--card-shadow)"><div style="font-size:22px;font-weight:800;color:#34C759">${skor}</div><div style="font-size:11px;color:var(--text-muted);font-weight:600">Benar</div></div>
+          <div style="background:var(--card);border-radius:14px;padding:14px;text-align:center;box-shadow:var(--card-shadow)"><div style="font-size:22px;font-weight:800;color:#FF3B30">${total-skor}</div><div style="font-size:11px;color:var(--text-muted);font-weight:600">Salah</div></div>
+          <div style="background:var(--card);border-radius:14px;padding:14px;text-align:center;box-shadow:var(--card-shadow)"><div style="font-size:22px;font-weight:800;color:${gc}">${pct}%</div><div style="font-size:11px;color:var(--text-muted);font-weight:600">Skor</div></div>
+        </div>
+        <div class="section-label">Pembahasan Soal</div>
+        ${pembahasanHTML}
+        <button class="mark-btn" style="background:#FF9500;color:#fff;margin-top:8px" onclick="resetQuiz()">🔄 Ulangi Latihan</button>
+        <button class="next-btn" onclick="sendToGoogleForms()">📋 Kirim Hasil ke Dosen</button>
+      </div>
+    </div>`;
+  }
+
+  // Soal aktif
+  const answered=quizState.answers.filter(a=>a!==null).length;
+  const soalHTML=soalArr.map((s,i)=>{
+    const ua=quizState.answers[i];
+    return `<div style="background:var(--card);border-radius:16px;padding:18px;margin-bottom:12px;box-shadow:var(--card-shadow)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:11px;font-weight:700;color:${m.color};text-transform:uppercase;letter-spacing:0.04em">${s.topik}</div>
+        <div style="font-size:11px;color:var(--text-muted);font-weight:600">${i+1}/${soalArr.length}</div>
+      </div>
+      <div style="font-size:15px;font-weight:600;color:var(--text);line-height:1.5;margin-bottom:14px">${s.soal}</div>
+      ${s.opsi.map((o,oi)=>`<div onclick="selectAnswer(${i},${oi})" style="background:${ua===oi?m.color+'20':'var(--sep)'};border:2px solid ${ua===oi?m.color:'transparent'};border-radius:10px;padding:10px 14px;margin-bottom:6px;font-size:14px;color:${ua===oi?m.color:'var(--text)'};font-weight:${ua===oi?'600':'400'};cursor:pointer;transition:all 0.15s;touch-action:manipulation;-webkit-tap-highlight-color:transparent">${o}</div>`).join('')}
+    </div>`;
+  }).join('');
+  return `<div>
+    <div class="back-row"><button class="back-btn" onclick="goBackToMeeting(${m.id})">${backSVG()} Kembali</button></div>
+    <div class="page" style="padding-top:0">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div><div class="pertemuan-badge" style="background:${m.color}15;color:${m.color};display:inline-block;margin-bottom:4px">Pertemuan ${m.id} • ${label}</div><h2 style="font-size:22px;font-weight:800;color:var(--text);letter-spacing:-0.02em">${icon} Latihan Soal ${label}</h2></div>
+        <div style="background:${m.color};color:#fff;border-radius:12px;padding:8px 14px;text-align:center;flex-shrink:0"><div style="font-size:18px;font-weight:800">${answered}</div><div style="font-size:10px;opacity:0.85">/${soalArr.length}</div></div>
+      </div>
+      <div class="prog-bar-bg" style="margin-bottom:20px"><div class="prog-bar-fill" style="background:${m.color};width:${Math.round((answered/soalArr.length)*100)}%"></div></div>
+      ${soalHTML}
+      <div style="background:var(--card);border-radius:16px;padding:18px;margin-top:8px;box-shadow:var(--card-shadow)">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px">👤 Data Mahasiswa</div>
+        <input id="q-email" type="email" placeholder="Email aktif *" style="width:100%;background:var(--sep);border:none;border-radius:10px;padding:12px 14px;font-size:14px;color:var(--text);font-family:inherit;margin-bottom:8px;-webkit-appearance:none;box-sizing:border-box"/>
+        <input id="q-nama" type="text" placeholder="Nama Lengkap *" style="width:100%;background:var(--sep);border:none;border-radius:10px;padding:12px 14px;font-size:14px;color:var(--text);font-family:inherit;margin-bottom:8px;-webkit-appearance:none;box-sizing:border-box"/>
+        <input id="q-nim" type="text" placeholder="NIM *" style="width:100%;background:var(--sep);border:none;border-radius:10px;padding:12px 14px;font-size:14px;color:var(--text);font-family:inherit;-webkit-appearance:none;box-sizing:border-box"/>
+      </div>
+      <button class="mark-btn" style="background:${m.color};color:#fff;margin-top:16px" onclick="submitQuiz()">✅ Selesai & Lihat Hasil</button>
+    </div>
+  </div>`;
+}
+
+// ============================================================
+// FORM URL
+// ============================================================
+function buildFormURL(m){
+  return "https://docs.google.com/forms/d/e/1FAIpQLSfrUm7096iZhLvEVVNo-uWLeSfaOJBe28yhcp0ASN-xqJMmvw/viewform";
+}
+
+// ============================================================
+// ACTIONS
+// ============================================================
+function switchTab(tab){currentTab=tab;selM=null;selS=null;document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById(`tb-${tab}`).classList.add('active');render();}
+function toggleDark(){dark=!dark;document.getElementById('root').classList.toggle('dark',dark);render();}
+function openMeeting(id){selM=meetings.find(m=>m.id===id);selS=null;currentTab='materi';render();}
+function openSection(mid,si){selM=meetings.find(m=>m.id===mid);selS=si;render();}
+function goBack(tab){selM=null;selS=null;currentTab=tab;document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById(`tb-${tab}`).classList.add('active');render();}
+function goBackToMeeting(mid){selM=meetings.find(m=>m.id===mid);selS=null;render();}
+
+// ============================================================
+// MAIN RENDER
+// ============================================================
+function render(){
+  const area=document.getElementById('scroll-area');
+  area.scrollTop=0;
+  let html='';
+  if(selS!==null&&selM)html=renderSectionDetail(selM,selS);
+  else if(selM)html=renderMeetingDetail(selM);
+  else if(currentTab==='home')html=renderHome();
+  else if(currentTab==='materi')html=renderMateri();
+  else if(currentTab==='progress')html=renderProgress();
+  area.innerHTML=html;
+}
+
+function updateClock(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});}
+updateClock();setInterval(updateClock,30000);
+render();
+</script>
+</body>
+</html>
